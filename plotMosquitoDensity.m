@@ -1,5 +1,15 @@
 function plotMosquitoDensity(filename)
-%generates surf plot of mosquito density using the .mat file passed to it
+% Generates surf plot of mosquito density using the .mat file passed to
+% it (filename).
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%% parameters
+%return if insufficient arguments passed
+if nargin<1
+    return;
+end
 
 %load the workspace file
 load(filename)

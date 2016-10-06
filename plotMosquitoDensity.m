@@ -10,6 +10,7 @@ function plotMosquitoDensity(filename)
 if nargin<1
     return;
 end
+wrapWorkspace = true;
 
 %load the workspace file
 load(filename)
@@ -28,6 +29,12 @@ for i=1:nM
     %calculate difference from PoseM(i) to every x and y location
     xDiff = (x-PoseM(i,1)).^2;
     yDiff = (y-PoseM(i,2)).^2;
+    if wrapWorkspace
+        xDiff = xDiff.*(xDiff<=2500) + (x+(L-PoseM(i,1))).^2.*(xDiff>2500);
+        xDiff = xDiff.*(xDiff<=2500) + (PoseM(i,1)+(L-x)).^2.*(xDiff>2500);
+        yDiff = yDiff.*(yDiff<=2500) + (y+(L-PoseM(i,2))).^2.*(yDiff>2500);
+        yDiff = yDiff.*(yDiff<=2500) + (PoseM(i,2)+(L-y)).^2.*(yDiff>2500);
+    end
     for thisX = 1:L
         for thisY = 1:L
             %calculate the contribution of PoseM(i) to this x and y location

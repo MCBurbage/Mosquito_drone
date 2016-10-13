@@ -16,7 +16,7 @@ wrapWorkspace = true;
 load(filename)
 
 %calculate the overall standard deviation
-sigma = std2(PoseM(:,1:2));
+sigma = 5;
 
 %initialize the density map
 density = zeros(L,L);

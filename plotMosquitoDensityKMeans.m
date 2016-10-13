@@ -2,7 +2,7 @@ function plotMosquitoDensityKMeans(filename)
 % Generates surf plot of mosquito density using the .mat file passed to
 % it (filename).
 %
-% Authors: Mary Burbage (mcfieler@uh.edu), Colin Losey (c???@rice.edu)
+% Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %%% parameters
@@ -40,7 +40,12 @@ for i=1:k
 end
 %now that we have the centers of the clusters and the standard deviations
 %of the clusters, we can create a map of probabilities
-surf(map)
+%surf(map)
+figure(1)
+image(displayimage)
+hold on
+scatter(PoseM(:,2),PoseM(:,1),'.','k')
+contour(map)
 
 a=1;
 end

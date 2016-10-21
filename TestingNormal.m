@@ -21,6 +21,8 @@ axis(L*[0,1,0,1])
 xlabel('X Position (m)');
 ylabel('Y Position (m)');
 title('After Flight Simulation')
+text(10,10,{[num2str(numel(PoseM(:,1))),' mosq. mean = ',num2str(mean(PoseM(:,1)),'%.2f'),',',num2str(mean(PoseM(:,2)),'%.2f')];...
+['var =',num2str(var(PoseM(:,1)),'%.2f'),',',num2str(var(PoseM(:,2)),'%.2f')]});
 
 %display histogram of positions
 subplot(2,2,2)
@@ -28,6 +30,8 @@ hist3(PoseM(:,1:2));
 xlabel('X Position (m)');
 ylabel('Y Position (m)');
 title('After Flight Simulation')
+text(10,10,{[num2str(numel(PoseM(:,1))),' mosq. mean = ',num2str(mean(PoseM(:,1)),'%.2f'),',',num2str(mean(PoseM(:,2)),'%.2f')];...
+['var =',num2str(var(PoseM(:,1)),'%.2f'),',',num2str(var(PoseM(:,2)),'%.2f')]});
 
 suptitle({['Positions of ', num2str(nM), ' Mosquitoes'];['After ', num2str(cumIters), ' Iterations - ', num2str(numKilled), ' Killed']})
 pause(1.0)
@@ -46,6 +50,9 @@ for i=1:10
     xlabel('X Position (m)');
     ylabel('Y Position (m)');
     title('After Flight Simulation')
+    text(10,10,{[num2str(numel(PoseM(:,1))),' mosq. mean = ',num2str(mean(PoseM(:,1)),'%.2f'),',',num2str(mean(PoseM(:,2)),'%.2f')];...
+['var =',num2str(var(PoseM(:,1)),'%.2f'),',',num2str(var(PoseM(:,2)),'%.2f')]});
+
     
     %display histogram of positions
     subplot(2,2,2)
@@ -67,6 +74,9 @@ for i=1:10
     xlabel('X Position (m)');
     ylabel('Y Position (m)');
     title('After Killer Simulation')
+    text(10,10,{[num2str(numel(PlotM(:,1))),' mosq. mean = ',num2str(mean(PlotM(:,1)),'%.2f'),',',num2str(mean(PlotM(:,2)),'%.2f')];...
+['var =',num2str(var(PlotM(:,1)),'%.2f'),',',num2str(var(PlotM(:,2)),'%.2f')]});
+
     
     %display histogram of positions
     subplot(2,2,4)

@@ -8,6 +8,7 @@ function plotMosquitoDensity(filename)
 %%% parameters
 %return if insufficient arguments passed
 if nargin<1
+    disp('Aborted:  Insufficient parameters passed')
     return;
 end
 wrapWorkspace = true;
@@ -47,3 +48,8 @@ end
 
 %plot the map
 surf(density);
+xlabel('X Position (m)')
+ylabel('Y Position (m)')
+zlabel('Mosquito Count in 1m x 1m Squares')
+set(gcf,'color','w');
+colorbar

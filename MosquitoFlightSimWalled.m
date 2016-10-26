@@ -59,7 +59,7 @@ for i = 1:nIters
                 XTurn=XLast(j)+d1*cos(theta(j));
                 YTurn=L;
             end
-            d2=movement(i)-d1;
+            d2=movement(j)-d1;
             %find a new heading and check that it will leave the mosquito inside
             %the workspace
             headingchange = (-pi+2*pi*rand(1,1));
@@ -80,4 +80,5 @@ for i = 1:nIters
     
     %set the return value
     PoseM = [X,Y,theta,Sm];
+
 end

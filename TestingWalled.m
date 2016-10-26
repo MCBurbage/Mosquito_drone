@@ -30,4 +30,9 @@ for i=1:100
     set(hMos,'Xdata', PoseM(:,1),'Ydata',PoseM(:,2))
     title({['Positions of ', num2str(nM), ' Mosquitoes'];['After ', num2str(cumIters), ' Iterations']})
     pause(0.1)
+    
+    if(mod(i, 10) == 0)
+        figure(7)
+        hist3(PoseM(:,1:2))
+    end
 end

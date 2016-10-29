@@ -1,6 +1,7 @@
 function SpiralMosquitoKiller()
 %TODO:  Keep the robot within the workspace boundaries
-
+%TODO:  Implement modes for testing differences in turn-around rules for paths
+%TODO:  Check net calculations
 
 %initialize constants
 nM = 10000; %number of mosquitoes
@@ -18,6 +19,15 @@ changeBuffer = 10;
 coverage = zeros(L,L);
 
 showPlots = true;
+
+%direction modes
+%dirMode = 1;  %spiral out for whole time - no direction change
+%dirMode = 2;  %spiral out until inside has more mosquitoes than outside,
+%then spiral back in until reach the center, then head back out, repeat
+%dirMode = 3;  %spiral out until inside population > a given percentage of
+%mosquitoes, then spiral back in until the inside population < another
+%percentage, repeat
+%dirMode = 4;  %spiral out and in to set waypoints
 
 %initialize mosquito positions randomly
 PoseM = [L*rand(nM,2),2*pi*rand(nM,1),ones(nM,1)];
@@ -46,7 +56,7 @@ hold on
 hRob = scatter(PoseR(:,1),PoseR(:,2),100,'b','filled');
 hRobScreenArea = patch(PoseR(1,1),PoseR(1,2),'b');
 set(hRobScreenArea,'facealpha',0.5)
-hRobPath = plot(PoseR(1,1),PoseR(1,2),'-y');
+hRobPath = plot(PoseR(1,1),PoseR(1,2),'-b');
 axis equal  %make axis lengths equal
 xlabel('x (m)')
 ylabel('y (m)')
@@ -147,5 +157,14 @@ for i=1:nIters
     end
 end
 
+if showPlots
+    %display area covered by robot
+    figure(2); clf; set(gcf,'color','w');
+    image(~coverage)
+    axis equal  % make lengths equal
+    xlabel('x (m)')
+    ylabel('y (m)')
+    axis(L*[0,1,0,1])
+end
 end
 

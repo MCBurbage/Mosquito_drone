@@ -1,7 +1,30 @@
-function SpiralMosquitoKiller()
+function [coveragepct,killpct] = SpiralMosquitoKiller(dirMode, var1, var2)
 %TODO:  Keep the robot within the workspace boundaries
-%TODO:  Implement modes for testing differences in turn-around rules for paths
 %TODO:  Check net calculations
+
+%defaults
+if nargin<1
+    dirMode = 1;
+elseif nargin<3
+    if dirMode == 3
+        outThresh = 0.7;
+        inThresh = 0.7;
+    elseif dirMode == 4
+        disp('Aborted:  Insufficient parameters passed')
+        return;
+    elseif dirMode > 4
+        disp('Aborted:  Invalid turning mode')
+        return;
+    end
+else
+    if dirMode == 3
+        outThresh = var1;
+        inThresh = var2;
+    elseif dirMode == 4
+        outWp = var1;
+        inWp = var2;
+    end
+end
 
 %initialize constants
 nM = 10000; %number of mosquitoes
@@ -14,11 +37,10 @@ velocityR = 12;
 screenWidth = 1;
 sw = screenWidth/2;
 velRStep = velocityR*timeStep;
-changeBuffer = 10;
 %%% Initialize coverage map
 coverage = zeros(L,L);
 
-showPlots = true;
+showPlots = false;
 
 %direction modes
 %dirMode = 1;  %spiral out for whole time - no direction change
@@ -37,6 +59,8 @@ PoseM = MosquitoFlightSimNormal(PoseM,L,5000,timeStep,mu,sigma);
 %set the robot's starting direction
 headingOut = true;
 stepDir = 1;
+outWpCnt = 1;
+inWpCnt = 1;
 %calculate the path
 pathR = BuildSpiralPath(screenWidth,L);
 [numSteps,~,~] = size(pathR);
@@ -45,7 +69,6 @@ curStep = 1;
 PoseR = [pathR(curStep,1) pathR(curStep,2) pi/2];
 Xr = PoseR(1,1);
 Yr = PoseR(1,2);
-dirChangeIters = 0;
 
 %set background image
 figure(1); clf; set(gcf,'color','w');
@@ -77,7 +100,6 @@ for i=1:nIters
             %direction
             headingOut = ~headingOut;
             stepDir = stepDir*(-1);
-            dirChangeIters = i;
             break;
         end
         if (movementR + pathR(curStep,3)) > velRStep
@@ -127,18 +149,52 @@ for i=1:nIters
     %the rest of the living mosquitoes are farther from the center than the
     %robot
     popOutside = popLiving - popInside;
-    if(headingOut) && (popInside > popOutside) && ((i - dirChangeIters) > changeBuffer)
-        %set flag to head back in
-        headingOut = false;
-        %change direction
-        stepDir = -1;
-        dirChangeIters = i;
-%     elseif(~headingOut) && (popInside < popOutside) && ((i - dirChangeIters) > changeBuffer)
-%         %set flag to head back out
-%         headingOut = true;
-%         %change direction
-%         stepDir = 1;
-%         dirChangeIters = i;
+    
+    %direction modes
+    %dirMode = 1;  %spiral out for whole time - no direction change
+    %dirMode = 2;  %spiral out until inside has more mosquitoes than outside,
+    %then spiral back in until reach the center, then head back out, repeat
+    %dirMode = 3;  %spiral out until inside population > a given percentage of
+    %mosquitoes, then spiral back in until the inside population < another
+    %percentage, repeat
+    %dirMode = 4;  %spiral out and in to set waypoints
+    if (dirMode == 1)
+        %no direction change except at ends of path
+    elseif (dirMode == 2)
+        if headingOut && (popInside > popOutside)
+            %set flag to head back in
+            headingOut = false;
+            %change direction
+            stepDir = -1;
+        end
+    elseif (dirMode == 3)
+        if headingOut && (popInside > inThresh*popLiving)
+            %set flag to head back in
+            headingOut = false;
+            %change direction
+            stepDir = -1;
+        elseif ~headingOut && (popOutside > outThresh*popLiving)
+            %set flag to head back out
+            headingOut = true;
+            %change direction
+            stepDir = 1;
+        end
+    elseif (dirMode == 4)
+        if headingOut && (r > outWp(outWpCnt))
+            %set flag to head back in
+            headingOut = false;
+            %change direction
+            stepDir = -1;
+            %increment waypoint counter
+            outWpCnt = outWpCnt + 1;
+        elseif ~headingOut && (r < inWp(inWpCnt))
+            %set flag to head back out
+            headingOut = true;
+            %change direction
+            stepDir = 1;
+            %increment waypoint counter
+            inWpCnt = inWpCnt + 1;
+        end
     end
     
     %%%%%%%%%%%%%%%% UPDATE THE PLOT
@@ -157,7 +213,7 @@ for i=1:nIters
     end
 end
 
-if showPlots
+if false %showPlots
     %display area covered by robot
     figure(2); clf; set(gcf,'color','w');
     image(~coverage)
@@ -166,5 +222,10 @@ if showPlots
     ylabel('y (m)')
     axis(L*[0,1,0,1])
 end
+
+%set return values
+coveragepct = mean(mean(coverage));
+killpct = 1 - popLiving/nM;
+
 end
 

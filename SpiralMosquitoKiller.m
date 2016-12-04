@@ -40,7 +40,7 @@ velRStep = velocityR*timeStep;
 %%% Initialize coverage map
 coverage = zeros(L,L);
 
-showPlots = false;
+showPlots = true;
 
 %direction modes
 %dirMode = 1;  %spiral out for whole time - no direction change

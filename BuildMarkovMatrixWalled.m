@@ -7,6 +7,10 @@ function P = BuildMarkovMatrixWalled(L)
 %
 % Author:  Mary Burbage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%return if insufficient arguments passed
+if nargin<1
+    return;
+end
 
 %set the number of iterations
 n = 10^7;

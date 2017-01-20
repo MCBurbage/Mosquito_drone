@@ -69,7 +69,7 @@ Px(nCells-1, nCells) = X(3);
 for i = 2:nCells-1
     %X
     A = [wx(i) 0 wx(i+1); 1 1 0; 0 wx(i) -wx(i+1)];
-    B = [wx(i) - wx(i-1)*Px(i-1,i); 1; 0];
+    B = [wx(i)-wx(i-1)*Px(i-1,i); 1-wx(i-1)*Px(i,i-1); 0];
     X = linsolve(A, B);
     Px(i,i) = X(1);
     Px(i,i+1) = X(2);

@@ -1,4 +1,4 @@
-function P = BuildMarkovMatrixWalled(L)
+function P = FindWalledProbabilities(L)
 
 %set the number of iterations
 n = 10^7;

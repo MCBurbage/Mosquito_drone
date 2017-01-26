@@ -55,7 +55,7 @@ if pathStart(1) == pathEnd(1)
         return;
     end
     
-    while cell(2) < pathEnd(2)
+    while cell(2) < pathEnd(2)+1
         %set the start of the path in the next cell
         thisStart = thisEnd;
         
@@ -95,7 +95,7 @@ x = min(ceil(thisStart(1)),pathEnd(1));
 if x == thisStart(1)
     x = thisStart(1) + 1;
 end
-while cell(1) < pathEnd(1) || cell(2) < pathEnd(2)
+while cell(1) < pathEnd(1)+1 || cell(2) < pathEnd(2)+1
     %set the next cell
     cell = nextCell;
     %calculate the y-coordinate corresponding to the x-coordinate

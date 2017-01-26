@@ -22,7 +22,12 @@ thisStart = pathStart;
 %set the starting cell
 cell = ceil(pathStart);
 %if the path starts on the edge of a cell, increment the cell number
-cell(cell==pathStart)=cell+1;
+if ceil(pathStart(1)) == floor(pathStart(1))
+    cell(1)=cell+1;
+end
+if ceil(pathStart(2)) == floor(pathStart(2))
+    cell(2)=cell+1;
+end
 
 %handle a vertical path (avoid infinite slope errors)
 if pathStart(1) == pathEnd(1)

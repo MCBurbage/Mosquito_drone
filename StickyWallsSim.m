@@ -1,33 +1,55 @@
-P = csvread('TransitionMatrix.csv');
-w = csvread('StationaryDist.csv');
-w = w';
+%P = csvread('TransitionMatrix.csv');
+%w = csvread('StationaryDist.csv');
+%w = w';
 
 nM = 10000;
 L = sqrt(numel(w));
-nIters = 100; %number of loop iterations
+nIters = 250; %number of loop iterations
 timeStep = 1; %time lapse for each loop iteration (s)
 velocityR = 12;
 screenWidth = 1;
 sw = screenWidth/2;
-velRStep = velocityR*timeStep;
 killRate = 0.9;
+
+%set mode for search path:  
+%1 - wall following
+%2 - boustrophedon
+%3 - hybrid with wall following for one circuit then boustrophedon for remaining time
+MODE = 3; 
 
 %%% Initialize coverage map
 coverage = zeros(L,L);
+PoseR = [sw sw 0];
 
 showPlots = true;
 
 %calculate the path
-pathR = BuildWallFollowPath(L);
+if MODE == 1
+    pathR = BuildWallFollowPath(screenWidth,L);
+elseif MODE == 2
+    pathR = BuildBoustrophedonPath(sw,sw,PoseR,screenWidth,L);
+elseif MODE == 3
+    %build wall-following path
+    pathR = BuildWallFollowPath(screenWidth,L);
+    %build and add on a boustrophedon path
+    pathR = [pathR; BuildBoustrophedonPath(sw,sw,PoseR,L/10,L)];
+    %add path segments to return to the start
+    %segment to move back to starting x point
+    [n,~] = size(pathR);
+    pathR = [pathR; [pathR(1,1) pathR(n,2) -pi]];
+else
+    disp('No valid mode selected')
+    return;
+end
+        
 [numSteps,~,~] = size(pathR);
 curStep = 1;
 %set the robot's starting position
 PoseR = pathR(curStep,:);
 
 %Find movement segments in path
-k = 1000;
 movement = velocityR*timeStep;
-region = findregion(pathR,k,PoseR,movement,true);
+region = findregion(pathR,nIters,PoseR,movement,true);
 %set the region counter for the first region
 cnt_reg = 1;
 
@@ -86,7 +108,7 @@ for i = 1:nIters
         set(hRob,'Xdata',PoseR(:,1),'Ydata',PoseR(:,2));
         title({[num2str(i), ' of ', num2str(nIters)];[num2str(killTotal), ' mosquitos killed']})
         
-        figure(2)
+        figure(2); set(gcf,'color','w');
         surf(distrib)
         xlabel('x (m)')
         ylabel('y (m)')

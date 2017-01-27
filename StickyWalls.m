@@ -1,20 +1,27 @@
-CHECK_LIMIT_DIST = false;
-SAVE_INFO = false;
+function [Ps, w] = StickyWalls(L,k,s)
+% Builds a Markov transition matrix and stationary distribution for moving
+% particles in a workspace.
+% L is the size of the workspace
+% k is the fraction of particles leaving the cell (total of off-diagonal
+% elements of the transition matrix)
+% s is the "sticking" coefficient - it reduces k for the edge cells (0 =
+% edge same as center, 1 = can't leave edges
+% Ps is the transition matrix (sparse)
+% w is the stationary distribution
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+tic
+SAVE_INFO = true;
 
-nM = 10000; %number of mosquitoes/particles
-L = 100;    %length of workspace
-killPct = 0.9;  %kill rate
-r = 1.0;    %width of area covered by robot
-
-k = 0.25;    %percentage of mosquitoes that leave the current cell
-sk = k*0.23;    %percentage of mosquitoes that moves to a cell up/down/left/right
-dk = k*0.02;    %percentage of mosquitoes that moves to a diagonal cell
-
-s = 0.5;    %percentage of mosquitoes that "stick" to the walls - this is the percentage reduction in sk and dk for wall cells
+%set the fraction of the mosquitoes that move to other cells
+sk = k*0.23;    %to a cell up/down/left/right
+dk = k*0.02;    %to a diagonal cell
 
 %for the edge cells, the row or column off the edge is 0%, and that row or
 %column is added to the center row or column, depending upon which edge it
 %is
+%corner cells do this for two edges
 
 %initialize Markov probability transition matrix
 P = zeros(L*L,L*L);
@@ -142,19 +149,14 @@ for i = 2:L-1
     end
 end
 
-if CHECK_LIMIT_DIST
-    %this calculates the stationary distribution of the population
-    %it runs very quickly for L = 25 but takes quite awhile (~30 min) for 
-    %L = 100
-    p = limitdist(P);
-    w = reshape(p,L,L);
-    surf(w)
-    if SAVE_INFO
-        csvwrite('StationaryDist.csv',p);
-    end
-end
+Ps = sparse(P);
 
+%calculate the stationary distribution of the population
+[V,~] = eigs(Ps');
+st = V(:,1).';
+st = st./sum(st);
+w = reshape(st,L,L);
 if SAVE_INFO
-    csvwrite('TransitionMatrix.csv',P);
+    save('StationaryDist.mat','Ps','w');
 end
-
+toc

@@ -1,21 +1,27 @@
-%P = csvread('TransitionMatrix.csv');
-%w = csvread('StationaryDist.csv');
-%w = w';
+USE_EXISTING_MARKOV = true;
+if USE_EXISTING_MARKOV
+    load('StationaryDist.mat');
+    L = sqrt(numel(w));
+else
+    L = 100;
+    k = 0.25;
+    s = 0.5;
+    [Ps,w] = StickyWalls(L,k,s);
+end
 
 nM = 10000;
-L = sqrt(numel(w));
-nIters = 250; %number of loop iterations
+nIters = 300; %number of loop iterations
 timeStep = 1; %time lapse for each loop iteration (s)
 velocityR = 12;
 screenWidth = 1;
 sw = screenWidth/2;
 killRate = 0.9;
 
-%set mode for search path:  
+%set mode for search path:
 %1 - wall following
 %2 - boustrophedon
 %3 - hybrid with wall following for one circuit then boustrophedon for remaining time
-MODE = 3; 
+MODE = 3;
 
 %%% Initialize coverage map
 coverage = zeros(L,L);
@@ -41,7 +47,7 @@ else
     disp('No valid mode selected')
     return;
 end
-        
+
 [numSteps,~,~] = size(pathR);
 curStep = 1;
 %set the robot's starting position
@@ -66,13 +72,23 @@ xlabel('x (m)')
 ylabel('y (m)')
 axis(L*[0,1,0,1])
 
+%set initial distribution
 distrib = nM * w;
+
+%display distribution map
+figure(2); clf; set(gcf,'color','w');
+surf(distrib)
+xlabel('x (m)')
+ylabel('y (m)')
+zlabel('Number of Mosquitoes')
+title({'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]})
+zl = zlim; zl(1) = 0;
 
 %iterate movement of the mosquitoes and robot
 for i = 1:nIters
     %sim movement of mosquitoes
     distrib = reshape(distrib, 1, numel(distrib));
-    distrib = distrib * P;
+    distrib = distrib * Ps;
     distrib = reshape(distrib, L, L);
     %sim movement of robot
     %clear the temp region from the previous step
@@ -113,6 +129,7 @@ for i = 1:nIters
         xlabel('x (m)')
         ylabel('y (m)')
         zlabel('Number of Mosquitoes')
+        zlim(zl)
         title({'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]})
         
         pause(0.2)

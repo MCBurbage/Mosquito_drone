@@ -22,9 +22,10 @@ end
 if pathStart(1) > pathEnd(1)
     [pathStart, pathEnd] = swap(pathStart,pathEnd);
 end
-%if the path is a vertical path, 
-%switch path ends if the start is above the end
+%if the path is a vertical path, select the lower point as the start of the
+%path
 if pathStart(1) == pathEnd(1)
+    %switch path ends if the start is above the end
     if pathStart(2) > pathEnd(2)
         [pathStart, pathEnd] = swap(pathStart,pathEnd);
     end

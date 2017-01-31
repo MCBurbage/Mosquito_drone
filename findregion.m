@@ -3,7 +3,7 @@ function [region] = findregion(path,itr_R,PoseR,movement,repeat)
 %length movement, beginning at PoseR.
 %
 %Note that this function only works with paths aligned with the x and y
-%axes.
+%axes..
 %
 % Authors: Mary Burbage (mcfieler@uh.edu), Sheryl Monzoor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -15,14 +15,19 @@ function [region] = findregion(path,itr_R,PoseR,movement,repeat)
 Xlast = PoseR(1,1);
 Ylast = PoseR(1,2);
 thetalast = PoseR(1,3);
-cnt_P=2;
+
+%get number of segments in path
 [end_P,~] = size(path);
+%initialize path segment counter to second segment
+cnt_P=2;
 
 for k=1:itr_R
     %set the beginning pose for the kth movement segment
     region(1,:,k) = [Xlast,Ylast,thetalast];
-    temp=0; %running total moved for the current movement segment
-    ii=2; %sub-segment counter
+    %reset running total moved for the current movement segment
+    temp=0;
+    %reset sub-segment counter 
+    ii=2; 
     
     %loop until the total distance in region(:,:,k) >= movement
     while temp < movement && cnt_P <= end_P
@@ -44,8 +49,8 @@ for k=1:itr_R
                 thetalast = path(cnt_P,3);
                 Xlast = path(cnt_P,1);
                 %if the distance between current and next path node
-                %is greater than movement then move the robot by 'movement'
-                %amount and subtract excess in y-direction
+                %is greater than movement step size then move the robot by 
+                %'movement' amount and subtract excess in y-direction
                 Ylast = path(cnt_P,2) - sin(thetalast)*(temp - movement);
                 region(ii,:,k) = [Xlast,Ylast,thetalast];
                 %if the move ends at the end of a path segment,
@@ -53,6 +58,8 @@ for k=1:itr_R
                 if temp == movement
                     cnt_P = cnt_P +1;
                 end
+                %if the path is to be repeated and the last segment has
+                %been reached, reset the path segment counter
                 if repeat && cnt_P > end_P
                     cnt_P = 1;
                 end
@@ -86,6 +93,8 @@ for k=1:itr_R
                 if temp == movement
                     cnt_P = cnt_P +1;
                 end
+                %if the path is to be repeated and the last segment has
+                %been reached, reset the path segment counter
                 if repeat && cnt_P > end_P
                     cnt_P = 1;
                 end
@@ -97,6 +106,8 @@ for k=1:itr_R
             %coordinate or the other; if not, there is an error so return
             return;
         end
+        %if the path is to be repeated and the last segment has
+        %been reached, reset the path segment counter
         if repeat && cnt_P > end_P
             cnt_P = 1;
         end

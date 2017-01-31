@@ -5,7 +5,7 @@ function p=limitdist(P)
 %probabilities matrix of a discrete-time Markov
 %chain or the generator matrix Q.
 
-[ns ms]=size(P);
+[ns,~]=size(P);
 n=ns;
 p=zeros(n,1);
 while n>1

@@ -12,10 +12,10 @@ end
 nM = 10000;
 nIters = 300; %number of loop iterations
 timeStep = 1; %time lapse for each loop iteration (s)
-velocityR = 12;
-screenWidth = 1;
-sw = screenWidth/2;
-killRate = 0.9;
+velocityR = 12; %robot velocity
+screenWidth = 1; %width of robot
+sw = screenWidth/2; %half width of robot
+killRate = 0.9; %percentage of population killed when robot visits cell
 
 %set mode for search path:
 %1 - wall following
@@ -25,8 +25,11 @@ MODE = 3;
 
 %%% Initialize coverage map
 coverage = zeros(L,L);
+
+%initialize robot position
 PoseR = [sw sw 0];
 
+%set whether to display progress plots
 showPlots = true;
 
 %calculate the path
@@ -48,18 +51,14 @@ else
     return;
 end
 
-[numSteps,~,~] = size(pathR);
-curStep = 1;
-%set the robot's starting position
-PoseR = pathR(curStep,:);
-
-%Find movement segments in path
-movement = velocityR*timeStep;
+%set amount robot moves in one time step
+movement = velocityR*timeStep; 
+%Find path segments for each time step
 region = findregion(pathR,nIters,PoseR,movement,true);
 %set the region counter for the first region
 cnt_reg = 1;
 
-%create figure
+%create robot path figure
 figure(1); clf; set(gcf,'color','w');
 %draw robot
 hRob = scatter(PoseR(:,1),PoseR(:,2),100,'b','filled');
@@ -86,44 +85,51 @@ zl = zlim; zl(1) = 0;
 
 %iterate movement of the mosquitoes and robot
 for i = 1:nIters
-    %sim movement of mosquitoes
+    %simulate movement of mosquitoes
+    %shape distribution as a vector
     distrib = reshape(distrib, 1, numel(distrib));
+    %multiply by the transition matrix
     distrib = distrib * Ps;
+    %shape distribution as a map
     distrib = reshape(distrib, L, L);
-    %sim movement of robot
-    %clear the temp region from the previous step
-    clear region_tmp;
-    %copy next region into temp region
-    region_tmp = region(:,:,cnt_reg);
-    %remove zero rows
-    region_tmp(~any(region_tmp,2),:) = [];
+    %simulate movement of robot
+    %clear the current region from the previous step
+    clear cur_region;
+    %copy next region into the current region
+    cur_region = region(:,:,cnt_reg);
+    %remove zero rows - NOTE:  this means the robot can never be at [0 0 0]
+    cur_region(~any(cur_region,2),:) = [];
     %increment region counter for next loop iteration
     cnt_reg = cnt_reg + 1;
-    [u, ~] = size(region_tmp);
+    %get the number of movement segments in the current region
+    [u, ~] = size(cur_region);
     %clear coverage area
     coverage = zeros(L,L);
     %calculate area covered for each segment of movement
     for z=2:u
         oldPoseR = PoseR;
-        PoseR = region_tmp(z,:);
+        PoseR = cur_region(z,:);
         coverage = UpdateTimeMap(oldPoseR(1,1:2),PoseR(1,1:2),coverage,1);
     end
-    %update robot position for end of temp region
-    PoseR = region_tmp(u,:);
     %calculate kill and update distribution
     kill = killRate*coverage;
+    %everything not killed has survived
     survival = ones(L,L) - kill;
+    %multiply the distribution by the survival rate
     distrib = distrib.*survival;
+    %calculate the total kill so far
     killTotal = nM - sum(sum(distrib));
     
+    %update figures
     if showPlots
+        %add current region coordinates to the robot path trace
         figure(1)
-        %add temp region coordinates to path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
-        set(hRobPath,'Xdata', [xd,region_tmp(:,1)'],'Ydata', [yd,region_tmp(:,2)']);
+        set(hRobPath,'Xdata', [xd,cur_region(:,1)'],'Ydata', [yd,cur_region(:,2)']);
         set(hRob,'Xdata',PoseR(:,1),'Ydata',PoseR(:,2));
         title({[num2str(i), ' of ', num2str(nIters)];[num2str(killTotal), ' mosquitos killed']})
         
+        %update the distribution map
         figure(2); set(gcf,'color','w');
         surf(distrib)
         xlabel('x (m)')

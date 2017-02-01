@@ -82,7 +82,7 @@ end
 
 %correct orientation for last step so that the path can be rejoined with
 %the start if it is looped
-path(cnt-1,3) = pi;
+path(cnt,:) = [path(cnt-1,1:2) pi];
 
 %keep the path inside the boundaries
 path(path(:,1)<0,1) = 0;

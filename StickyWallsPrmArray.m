@@ -28,6 +28,12 @@ for i = 1:numel(testTime)
                 for m = 1:numel(killRate)
                     for n = 1:numel(mode)
                         for o = 1:numel(rowSpacing)
+                            if n==1 && o>1
+                                %boustrophedon row spacing does not matter
+                                %for wall-following mode so skip all but
+                                %the first test
+                                continue;
+                            end
                             disp(['Test ',num2str(cnt),' of ',num2str(testCnt)])
                             disp(['i=',num2str(i),', j=',num2str(j),', k=',num2str(k),', l=',num2str(l),', m=',num2str(m),', n=',num2str(n),', o=',num2str(o)])
                             testResults(cnt,1) = testTime(i);

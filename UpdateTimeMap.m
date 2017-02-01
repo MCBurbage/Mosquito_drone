@@ -17,6 +17,16 @@ if dist(pathStart,pathEnd) == 0
     return;
 end
 
+%define a small amount for avoiding errors at the boundaries
+eps = 0.01;
+[n,m] = size(timeMap);
+%shift any values on the high boundaries inside the boundaries
+pathStart(pathStart(:,1)==n,1) = n-eps;
+pathStart(pathStart(:,2)==m,2) = m-eps;
+pathEnd(pathEnd(:,1)==n,1) = n-eps;
+pathEnd(pathEnd(:,2)==m,2) = m-eps;
+
+
 %select the leftmost point on the path as the start of the path
 %this eliminates checking whether the path leaves the cell to the left
 if pathStart(1) > pathEnd(1)

@@ -19,7 +19,7 @@ end
 %set the first location in the path at the starting pose
 path(cnt,1) = Xstart;
 path(cnt,2) = Ystart;
-path(cnt,3) = 0;
+path(cnt,3) = pi;
 cnt = cnt+1;
 
 %get to start location
@@ -79,6 +79,10 @@ while path(cnt-1,1)<L
     path(cnt,3) = 0;
     cnt = cnt+1;
 end
+
+%correct orientation for last step so that the path can be rejoined with
+%the start if it is looped
+path(cnt-1,3) = pi;
 
 %keep the path inside the boundaries
 path(path(:,1)<0,1) = 0;

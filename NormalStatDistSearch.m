@@ -80,6 +80,10 @@ if any(kerr)
     disp('Error:  k outside bounds [0,1]')
     return;
 end
+if k(1) > 0.5
+    disp('Error:  center k > 0.5')
+    return;
+end
 
 P = zeros(N*2-1,N*2-1);
 i = 1;
@@ -94,9 +98,9 @@ for i = 2:N-1
 end
 i = N;
 j = 1;
-P(i,i-1) = cell(j+1)*k(j);
-P(i,i+1) = cell(j+1)*k(j);
-P(i,i) = 1-k(j);
+P(i,i-1) = k(j);
+P(i,i+1) = k(j);
+P(i,i) = 1-2*k(j);
 for i = N+1:2*N-2
     j = i-(N-1);
     P(i,i-1) = cell(j-1)/(cell(j+1)+cell(j-1))*k(j);
@@ -114,12 +118,7 @@ Ps = sparse(P);
 %calculate the stationary distribution of the population
 [V,~] = eigs(Ps');
 st = V(:,1).';
-bar(st)
-sum(st)
 st = st./sum(st);
 
 dist = [fliplr(cell),cell(2:N)];
 %bar([dist', st'])
-%bar(dist)
-
-

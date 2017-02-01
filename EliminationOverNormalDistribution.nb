@@ -10,10 +10,17 @@
 NotebookFileLineBreakTest
 NotebookFileLineBreakTest
 NotebookDataPosition[       158,          7]
+<<<<<<< Updated upstream
 NotebookDataLength[    749686,      13278]
 NotebookOptionsPosition[    745451,      13134]
 NotebookOutlinePosition[    745798,      13149]
 CellTagsIndexPosition[    745755,      13146]
+=======
+NotebookDataLength[    687712,      12305]
+NotebookOptionsPosition[    683524,      12161]
+NotebookOutlinePosition[    683881,      12177]
+CellTagsIndexPosition[    683838,      12174]
+>>>>>>> Stashed changes
 WindowFrame->Normal*)
 
 (* Beginning of Notebook Content *)
@@ -12254,7 +12261,11 @@ Cell[BoxData[
       Rational[1, 100], 1}, {{
        Hold[$CellContext`\[Sigma]$$], 
        Rational[2, 3]}, 
+<<<<<<< Updated upstream
       Rational[1, 100], 10}}, Typeset`size$$ = {556., {117., 121.}}, 
+=======
+      Rational[1, 100], 10}}, Typeset`size$$ = {555., {117., 121.}}, 
+>>>>>>> Stashed changes
     Typeset`update$$ = 0, Typeset`initDone$$, Typeset`skipInitDone$$ = 
     True, $CellContext`T$14666$$ = 0, $CellContext`KillFrac$14667$$ = 
     0, $CellContext`\[Sigma]$14668$$ = 0}, 
@@ -12300,7 +12311,11 @@ $CellContext`KillFrac$$)) $CellContext`KillFrac$$]}, {$CellContext`t, 0,
          Rational[1, 100], 1}, {{$CellContext`\[Sigma]$$, 
           Rational[2, 3]}, 
          Rational[1, 100], 10}}, "Options" :> {}, "DefaultOptions" :> {}],
+<<<<<<< Updated upstream
      ImageSizeCache->{607., {189., 196.}},
+=======
+     ImageSizeCache->{600., {189., 194.}},
+>>>>>>> Stashed changes
      SingleEvaluation->True],
     Deinitialization:>None,
     DynamicModuleValues:>{},
@@ -12907,7 +12922,7 @@ Cell[BoxData[
               DynamicBox[ToBoxes[
                 FEPrivate`FrontEndResource[
                 "FEStrings", "sizeBriefExplanation"], StandardForm],
-               ImageSizeCache->{65., {3., 9.}}],
+               ImageSizeCache->{58., {2., 8.}}],
               StripOnInput->False,
               DynamicUpdating->True], "SuggestionsBarCategory",
              StripOnInput->False],
@@ -12929,7 +12944,7 @@ Cell[BoxData[
               DynamicBox[ToBoxes[
                 FEPrivate`FrontEndResource["FEStrings", "sizeShowLess"], 
                 StandardForm],
-               ImageSizeCache->{52., {1., 9.}}],
+               ImageSizeCache->{49., {0., 8.}}],
               StripOnInput->False,
               DynamicUpdating->True], "SuggestionsBarControl",
              StripOnInput->False], True->
@@ -12960,7 +12975,7 @@ Cell[BoxData[
               DynamicBox[ToBoxes[
                 FEPrivate`FrontEndResource["FEStrings", "sizeShowMore"], 
                 StandardForm],
-               ImageSizeCache->{62., {1., 9.}}],
+               ImageSizeCache->{54., {0., 8.}}],
               StripOnInput->False,
               DynamicUpdating->True], "SuggestionsBarControl",
              StripOnInput->False], True->
@@ -12991,7 +13006,7 @@ Cell[BoxData[
               DynamicBox[ToBoxes[
                 FEPrivate`FrontEndResource["FEStrings", "sizeShowAll"], 
                 StandardForm],
-               ImageSizeCache->{44., {1., 9.}}],
+               ImageSizeCache->{40., {0., 8.}}],
               StripOnInput->False,
               DynamicUpdating->True], "SuggestionsBarControl",
              StripOnInput->False], True->
@@ -13021,7 +13036,7 @@ Cell[BoxData[
               DynamicBox[ToBoxes[
                 FEPrivate`FrontEndResource["FEStrings", "sizeChangeLimit"], 
                 StandardForm],
-               ImageSizeCache->{78., {1., 9.}}],
+               ImageSizeCache->{72., {0., 8.}}],
               StripOnInput->False,
               DynamicUpdating->True], "SuggestionsBarControl",
              StripOnInput->False], True->
@@ -13111,6 +13126,7 @@ Cell[BoxData[
   3.694189174110965*^9}}],
 
 Cell[BoxData[
+<<<<<<< Updated upstream
  TagBox[
   RowBox[{"Limit", "[", 
    RowBox[{
@@ -13119,6 +13135,214 @@ Cell[BoxData[
     RowBox[{"n", "\[Rule]", "\[Infinity]"}]}], "]"}],
   Function[BoxForm`e$, 
    MatrixForm[BoxForm`e$]]]], "Output",
+=======
+ InterpretationBox[
+  TagBox[
+   FrameBox[GridBox[{
+      {
+       ItemBox[
+        TagBox[
+         TagBox[
+          RowBox[{"(", "\[NoBreak]", 
+           TemplateBox[{"1"},
+            "OutputSizeLimit`Skeleton",
+            DisplayFunction->(FrameBox[
+              RowBox[{"\" \[CenterEllipsis]\"", #, "\"\[CenterEllipsis] \""}],
+               Background -> GrayLevel[0.75], 
+              BaseStyle -> {
+               "Deploy", FontColor -> GrayLevel[1], FontSize -> Smaller, 
+                ShowStringCharacters -> False}, BaselinePosition -> Baseline, 
+              ContentPadding -> False, FrameMargins -> 1, FrameStyle -> 
+              GrayLevel[0.75], RoundingRadius -> 7]& )], "\[NoBreak]", ")"}],
+          Function[BoxForm`e$, 
+           MatrixForm[BoxForm`e$]]],
+         Short[#, 5]& ],
+        BaseStyle->{Deployed -> False},
+        StripOnInput->False]},
+      {GridBox[{
+         {
+          TagBox[
+           TooltipBox[
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource[
+                "FEStrings", "sizeBriefExplanation"], StandardForm],
+               ImageSizeCache->{58., {2., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarCategory",
+             StripOnInput->False],
+            StyleBox[
+             DynamicBox[
+              ToBoxes[
+               FEPrivate`FrontEndResource["FEStrings", "sizeExplanation"], 
+               StandardForm]], DynamicUpdating -> True, StripOnInput -> 
+             False]],
+           Annotation[#, 
+            Style[
+             Dynamic[
+              FEPrivate`FrontEndResource["FEStrings", "sizeExplanation"]], 
+             DynamicUpdating -> True], "Tooltip"]& ], 
+          ButtonBox[
+           PaneSelectorBox[{False->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowLess"], 
+                StandardForm],
+               ImageSizeCache->{49., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControl",
+             StripOnInput->False], True->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowLess"], 
+                StandardForm]],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControlActive",
+             StripOnInput->False]}, Dynamic[
+             CurrentValue["MouseOver"]],
+            Alignment->Center,
+            FrameMargins->0,
+            ImageSize->{Automatic, 25}],
+           Appearance->None,
+           ButtonFunction:>OutputSizeLimit`ButtonFunction[
+             Function[{OutputSizeLimit`Dump`x$}, 
+              MatrixForm[OutputSizeLimit`Dump`x$]], 41, 27381677818062076649, 
+             5/2],
+           Enabled->True,
+           Evaluator->Automatic,
+           Method->"Queued"], 
+          ButtonBox[
+           PaneSelectorBox[{False->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowMore"], 
+                StandardForm],
+               ImageSizeCache->{54., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControl",
+             StripOnInput->False], True->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowMore"], 
+                StandardForm],
+               ImageSizeCache->{54., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControlActive",
+             StripOnInput->False]}, Dynamic[
+             CurrentValue["MouseOver"]],
+            Alignment->Center,
+            FrameMargins->0,
+            ImageSize->{Automatic, 25}],
+           Appearance->None,
+           ButtonFunction:>OutputSizeLimit`ButtonFunction[
+             Function[{OutputSizeLimit`Dump`x$}, 
+              MatrixForm[OutputSizeLimit`Dump`x$]], 41, 27381677818062076649, 
+             5 2],
+           Enabled->True,
+           Evaluator->Automatic,
+           Method->"Queued"], 
+          ButtonBox[
+           PaneSelectorBox[{False->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowAll"], 
+                StandardForm],
+               ImageSizeCache->{40., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControl",
+             StripOnInput->False], True->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeShowAll"], 
+                StandardForm]],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControlActive",
+             StripOnInput->False]}, Dynamic[
+             CurrentValue["MouseOver"]],
+            Alignment->Center,
+            FrameMargins->0,
+            ImageSize->{Automatic, 25}],
+           Appearance->None,
+           ButtonFunction:>OutputSizeLimit`ButtonFunction[
+             Function[{OutputSizeLimit`Dump`x$}, 
+              MatrixForm[OutputSizeLimit`Dump`x$]], 41, 27381677818062076649, 
+             Infinity],
+           Enabled->True,
+           Evaluator->Automatic,
+           Method->"Queued"], 
+          ButtonBox[
+           PaneSelectorBox[{False->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeChangeLimit"], 
+                StandardForm],
+               ImageSizeCache->{72., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControl",
+             StripOnInput->False], True->
+            StyleBox[
+             StyleBox[
+              DynamicBox[ToBoxes[
+                FEPrivate`FrontEndResource["FEStrings", "sizeChangeLimit"], 
+                StandardForm],
+               ImageSizeCache->{72., {0., 8.}}],
+              StripOnInput->False,
+              DynamicUpdating->True], "SuggestionsBarControlActive",
+             StripOnInput->False]}, Dynamic[
+             CurrentValue["MouseOver"]],
+            Alignment->Center,
+            FrameMargins->0,
+            ImageSize->{Automatic, 25}],
+           Appearance->None,
+           ButtonFunction:>FrontEndExecute[{
+              FrontEnd`SetOptions[
+              FrontEnd`$FrontEnd, 
+               FrontEnd`PreferencesSettings -> {"Page" -> "Evaluation"}], 
+              FrontEnd`FrontEndToken["PreferencesDialog"]}],
+           Evaluator->None,
+           Method->"Preemptive"]}
+        },
+        AutoDelete->False,
+        FrameStyle->GrayLevel[0.85],
+        GridBoxDividers->{"Columns" -> {False, {True}}},
+        GridBoxItemSize->{"Columns" -> {{Automatic}}, "Rows" -> {{Automatic}}},
+        GridBoxSpacings->{"Columns" -> {{2}}}]}
+     },
+     DefaultBaseStyle->"Column",
+     GridBoxAlignment->{
+      "Columns" -> {{Left}}, "ColumnsIndexed" -> {}, "Rows" -> {{Baseline}}, 
+       "RowsIndexed" -> {}},
+     GridBoxDividers->{
+      "Columns" -> {{False}}, "ColumnsIndexed" -> {}, "Rows" -> {{False}}, 
+       "RowsIndexed" -> {}},
+     GridBoxItemSize->{
+      "Columns" -> {{Automatic}}, "ColumnsIndexed" -> {}, "Rows" -> {{1.}}, 
+       "RowsIndexed" -> {}},
+     GridBoxSpacings->{"Columns" -> {
+         Offset[0.27999999999999997`], {
+          Offset[0.5599999999999999]}, 
+         Offset[0.27999999999999997`]}, "ColumnsIndexed" -> {}, "Rows" -> {
+         Offset[0.2], 
+         Offset[1.2], {
+          Offset[0.4]}, 
+         Offset[0.2]}, "RowsIndexed" -> {}}],
+    Background->RGBColor[0.9657, 0.9753, 0.9802],
+    FrameMargins->{{12, 12}, {0, 15}},
+    FrameStyle->GrayLevel[0.85],
+    RoundingRadius->5,
+    StripOnInput->False],
+   Deploy,
+   DefaultBaseStyle->"Deploy"],
+  Out[41]]], "Output",
+>>>>>>> Stashed changes
  CellChangeTimes->{{3.693847009809865*^9, 3.693847013595724*^9}, 
    3.6938472412152443`*^9, 3.693847897486293*^9, 3.694188100002386*^9}]
 }, Open  ]]
@@ -13132,9 +13356,16 @@ distribution w.  We want P to be symmetric.\
  CellChangeTimes->{{3.6875382573636*^9, 3.6875382940488873`*^9}, 
    3.687538627714513*^9, {3.693842929499015*^9, 3.693843020428604*^9}}]
 },
+<<<<<<< Updated upstream
 WindowSize->{1366, 685},
 WindowMargins->{{-8, Automatic}, {Automatic, -8}},
 FrontEndVersion->"10.0 for Microsoft Windows (64-bit) (September 9, 2014)",
+=======
+WindowSize->{808, 619},
+WindowMargins->{{48, Automatic}, {Automatic, 0}},
+FrontEndVersion->"10.0 for Mac OS X x86 (32-bit, 64-bit Kernel) (September 9, \
+2014)",
+>>>>>>> Stashed changes
 StyleDefinitions->"Default.nb"
 ]
 (* End of Notebook Content *)
@@ -13149,53 +13380,61 @@ CellTagsIndex->{}
 (*NotebookFileOutline
 Notebook[{
 Cell[CellGroupData[{
-Cell[580, 22, 420, 9, 127, "Section"],
+Cell[580, 22, 420, 9, 121, "Section"],
 Cell[CellGroupData[{
+<<<<<<< Updated upstream
 Cell[1025, 35, 257, 5, 49, "Subsection"],
+=======
+Cell[1025, 35, 257, 5, 69, "Subsection"],
+>>>>>>> Stashed changes
 Cell[CellGroupData[{
-Cell[1307, 44, 478, 16, 45, "Input"],
-Cell[1788, 62, 1169, 37, 78, "Output"]
+Cell[1307, 44, 478, 16, 44, "Input"],
+Cell[1788, 62, 1169, 37, 73, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[2994, 104, 630, 19, 45, "Input"],
-Cell[3627, 125, 276, 7, 58, "Output"]
+Cell[2994, 104, 630, 19, 44, "Input"],
+Cell[3627, 125, 276, 7, 59, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[3940, 137, 320, 11, 59, "Input"],
-Cell[4263, 150, 264, 8, 58, "Output"]
+Cell[3940, 137, 320, 11, 61, "Input"],
+Cell[4263, 150, 264, 8, 59, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
+<<<<<<< Updated upstream
 Cell[4564, 163, 1154, 32, 59, "Input"],
+=======
+Cell[4564, 163, 1154, 32, 108, "Input"],
+>>>>>>> Stashed changes
 Cell[5721, 197, 148423, 2427, 182, 99288, 1620, "CachedBoxData", "BoxData", \
 "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[154181, 2629, 727, 21, 52, "Input"],
-Cell[154911, 2652, 749, 21, 55, "Output"]
+Cell[154181, 2629, 727, 21, 46, "Input"],
+Cell[154911, 2652, 749, 21, 57, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[155697, 2678, 1218, 31, 72, "Input"],
+Cell[155697, 2678, 1218, 31, 63, "Input"],
 Cell[156918, 2711, 22992, 374, 177, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[179947, 3090, 228, 5, 31, "Input"],
+Cell[179947, 3090, 228, 5, 28, "Input"],
 Cell[180178, 3097, 86956, 1352, 237, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[267171, 4454, 917, 25, 72, "Input"],
-Cell[268091, 4481, 21673, 363, 300, "Output"]
+Cell[267171, 4454, 917, 25, 63, "Input"],
+Cell[268091, 4481, 21673, 363, 301, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[289801, 4849, 967, 27, 92, "Input"],
-Cell[290771, 4878, 915, 25, 55, "Output"]
+Cell[289801, 4849, 967, 27, 63, "Input"],
+Cell[290771, 4878, 915, 25, 57, "Output"]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[291723, 4908, 1187, 33, 99, "Input"],
-Cell[292913, 4943, 103, 1, 31, "Output"]
+Cell[291723, 4908, 1187, 33, 98, "Input"],
+Cell[292913, 4943, 103, 1, 28, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
-Cell[293065, 4950, 93, 1, 49, "Subsection"],
+Cell[293065, 4950, 93, 1, 44, "Subsection"],
 Cell[293161, 4953, 1364, 43, 94, "Input"],
 Cell[CellGroupData[{
 Cell[294550, 5000, 440, 12, 28, "Input"],
@@ -13207,6 +13446,7 @@ Cell[359318, 6079, 63257, 1037, 263, "Output"]
 }, Open  ]]
 }, Closed]],
 Cell[CellGroupData[{
+<<<<<<< Updated upstream
 Cell[422624, 7122, 103, 1, 41, "Subsection"],
 Cell[422730, 7125, 1151, 35, 100, "Input",
  InitializationCell->True],
@@ -13217,10 +13457,23 @@ Cell[424511, 7184, 85751, 1400, 207, "Output"]
 Cell[CellGroupData[{
 Cell[510299, 8589, 731, 20, 52, "Input"],
 Cell[511033, 8611, 121722, 1991, 207, 85542, 1397, "CachedBoxData", \
+=======
+Cell[422624, 7122, 103, 1, 36, "Subsection"],
+Cell[422730, 7125, 1100, 34, 94, "Input",
+ InitializationCell->True],
+Cell[CellGroupData[{
+Cell[423855, 7163, 602, 18, 28, "Input"],
+Cell[424460, 7183, 708, 17, 207, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[425205, 7205, 731, 20, 46, "Input"],
+Cell[425939, 7227, 139905, 2289, 181, 85518, 1396, "CachedBoxData", \
+>>>>>>> Stashed changes
 "BoxData", "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[CellGroupData[{
+<<<<<<< Updated upstream
 Cell[632804, 10608, 460, 10, 79, "Subsection"],
 Cell[CellGroupData[{
 Cell[633289, 10622, 1291, 37, 111, "Input"],
@@ -13280,6 +13533,66 @@ Cell[744729, 13112, 392, 10, 45, "Output"]
 }, Open  ]]
 }, Open  ]],
 Cell[745160, 13127, 287, 5, 111, "Section"]
+=======
+Cell[565893, 9522, 460, 10, 69, "Subsection"],
+Cell[CellGroupData[{
+Cell[566378, 9536, 1291, 37, 106, "Input"],
+Cell[567672, 9575, 17138, 333, 258, "Output"]
+}, Open  ]]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[584859, 9914, 1813, 48, 244, "Subsection"],
+Cell[CellGroupData[{
+Cell[586697, 9966, 1012, 29, 91, "Input"],
+Cell[587712, 9997, 311, 9, 46, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[588060, 10011, 1553, 37, 108, "Input"],
+Cell[589616, 10050, 580, 17, 63, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[590233, 10072, 2187, 61, 138, "Input"],
+Cell[592423, 10135, 946, 29, 63, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[593406, 10169, 4411, 115, 431, "Input"],
+Cell[597820, 10286, 39916, 723, 257, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[637773, 11014, 5627, 140, 425, "Input"],
+Cell[643403, 11156, 3865, 74, 400, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[647307, 11235, 447, 8, 204, "Section"],
+Cell[647757, 11245, 676, 17, 155, "Section"],
+Cell[CellGroupData[{
+Cell[648458, 11266, 287, 5, 85, "Section"],
+Cell[CellGroupData[{
+Cell[648770, 11275, 218, 5, 69, "Subsection"],
+Cell[648991, 11282, 424, 13, 63, "Input"],
+Cell[CellGroupData[{
+Cell[649440, 11299, 551, 16, 46, "Input"],
+Cell[649994, 11317, 1421, 46, 87, "Output"]
+}, Open  ]],
+Cell[651430, 11366, 800, 25, 97, "Input"],
+Cell[CellGroupData[{
+Cell[652255, 11395, 571, 15, 46, "Input"],
+Cell[652829, 11412, 129, 2, 28, "Output"]
+}, Open  ]],
+Cell[652973, 11417, 573, 17, 97, "Input"],
+Cell[CellGroupData[{
+Cell[653571, 11438, 186, 4, 28, "Input"],
+Cell[653760, 11444, 20312, 466, 160, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[674109, 11915, 898, 24, 80, "Input"],
+Cell[675010, 11941, 8184, 208, 90, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]],
+Cell[683233, 12154, 287, 5, 99, "Section"]
+>>>>>>> Stashed changes
 }
 ]
 *)

@@ -1,9 +1,9 @@
 %initialize variables
-nM = 10000;
-L = 100;
-cellSize = 1;
-mu = [L/2 L/2];
-sigma = [L/10 L/10];
+nM = 10000; % number initial mosquitos
+L = 10; %workspace edge length
+cellSize = 1; % 
+mu = [L/2 L/2]; % average
+sigma = [L/10 L/10]; 
 
 nCells = L/cellSize;
 p = zeros(nCells,2);
@@ -23,6 +23,7 @@ Py = zeros(nCells,nCells);
 
 %solve for the transitions from cells at either end of the distribution
 %X
+
 A = [wx(1) 0 wx(2); 1 1 0; 0 wx(1) -wx(2)];
 B = [wx(1); 1; 0];
 X = linsolve(A, B);

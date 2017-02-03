@@ -43,7 +43,7 @@ for i = 1:numel(testTime)
                             testResults(cnt,5) = killRate(m);
                             testResults(cnt,6) = mode(n);
                             testResults(cnt,7) = rowSpacing(o);
-                            testResults(cnt,8) = StickyWallsSim(L,i,j,k,l,m,n,o);
+                            testResults(cnt,8) = StickyWallsSim(L,testTime(i),velocityR(j),stick(k),transitionPct(l),killRate(m),mode(n),rowSpacing(o));
                             cnt = cnt+1;
                         end
                     end

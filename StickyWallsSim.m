@@ -10,6 +10,7 @@ if nargin<1
     MODE = 3;
     sw = 1; %width of robot
 end
+
 USE_EXISTING_MARKOV = false;
 if USE_EXISTING_MARKOV
     load('StationaryDist.mat');

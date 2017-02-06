@@ -1,8 +1,8 @@
 function killTotal = StickyWallsSim(L,nIters,velocityR,s,k,killRate,MODE,sw)
 
 if nargin<1
-    nIters = 100;
-    velocityR = 12;
+    nIters = 300; %number of loop iterations
+    velocityR = 12; %robot velocity
     s = 0.5;
     L = 100;
     k = 0.25;
@@ -20,9 +20,7 @@ else
 end
 
 nM = 10000;
-nIters = 300; %number of loop iterations
 timeStep = 1; %time lapse for each loop iteration (s)
-velocityR = 12; %robot velocity
 
 %set mode for search path:
 %1 - wall following

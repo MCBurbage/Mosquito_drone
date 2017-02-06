@@ -18,7 +18,7 @@ end
 w(nCells) = 1-sum(sum(w));
 
 %initialize the transition matrices with zeros
-Px = zeros(nCells,nCells);
+P = zeros(nCells,nCells);
 
 %calculate the number of unknowns - half the size of the matrix with three
 %unknowns for each row except the first and last which have only two
@@ -82,28 +82,28 @@ x = linprog(f,[],[],Aeq,Beq,lb,ub);
 %Build the transition matrix from the solutions to the linear programming
 %problem
 %The first row has two entries
-Px(1,1:2) = x(1:2);
+P(1,1:2) = x(1:2);
 cnt = 3;
 %The interior rows have three entries
 for i=2:halfCells-1
-    Px(i,i-1:i+1) = x(cnt:cnt+2);
+    P(i,i-1:i+1) = x(cnt:cnt+2);
     cnt = cnt+3;
 end
 %The center row has the last two entries
 %The symmetry around the center reverses the order for the rest of the
 %distribution
-Px(halfCells,halfCells-1:halfCells+1) = [x(sz-1) x(sz) x(sz-1)];
+P(halfCells,halfCells-1:halfCells+1) = [x(sz-1) x(sz) x(sz-1)];
 cnt = sz-2;
 %The interior rows have three entries
 for i=halfCells+1:nCells-1
-    Px(i,i-1:i+1) = flipud(x(cnt-2:cnt));
+    P(i,i-1:i+1) = flipud(x(cnt-2:cnt));
     cnt = cnt-3;
 end
 %The last row has the last two entries
-Px(nCells,nCells-1:nCells) = [x(2),x(1)];
+P(nCells,nCells-1:nCells) = [x(2),x(1)];
 
 %Convert the transition matrix to a sparse matrix
-Ps = sparse(Px);
+Ps = sparse(P);
 %Find the eigenvalues
 [V,~] = eigs(Ps');
 %The first column holds the stationary distribution

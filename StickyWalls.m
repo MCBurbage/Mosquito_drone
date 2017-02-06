@@ -11,7 +11,6 @@ function [Ps, w] = StickyWalls(L,k,s)
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-tic
 SAVE_INFO = true;
 
 %set the fraction of the mosquitoes that move to other cells
@@ -159,4 +158,3 @@ w = reshape(st,L,L);
 if SAVE_INFO
     save('StationaryDist.mat','Ps','w');
 end
-toc

@@ -1,11 +1,11 @@
 function killTotal = StickyWallsGreedy2Sim(L,runTime,velocityR,s,k,killRate)
 
 if nargin<1
-    runTime = 1000; %time to run simulation (s)
-    velocityR = 12; %robot velocity
-    s = 0.5;
-    L = 100;
-    k = 0.25;
+    L = 100; %size of workspace (m)
+    runTime = 100; %time to run simulation (s)
+    velocityR = 12; %robot velocity (m/s)
+    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
 end
 
@@ -24,7 +24,7 @@ nIters = velocityR*runTime/timeStep;
 
 %initialize robot position
 %PoseR = [ceil(L/2) ceil(L/2)];
-PoseR = [0 0];
+PoseR = [1 1];
 
 %set whether to display progress plots
 showPlots = true;
@@ -80,24 +80,32 @@ for i = 1:nIters
     step1Pose = PoseR;
     tempDistrib = distrib;
     if ~any(step1Pose<1) && ~any(step1Pose>L)
-    tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
     option2(:,1) = option1(1) + getOptionMatrix(tempDistrib,step1Pose,L);
     step1Pose = [PoseR(1),PoseR(2)-1];
     tempDistrib = distrib;
-    tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
     option2(:,2) = option1(2) + getOptionMatrix(tempDistrib,step1Pose,L);
     step1Pose = [PoseR(1),PoseR(2)+1];
     tempDistrib = distrib;
-    tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
     option2(:,3) = option1(3) + getOptionMatrix(tempDistrib,step1Pose,L);
     step1Pose = [PoseR(1)-1,PoseR(2)];
     tempDistrib = distrib;
-    tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
     option2(:,4) = option1(4) + getOptionMatrix(tempDistrib,step1Pose,L);
     step1Pose = [PoseR(1)+1,PoseR(2)];
     tempDistrib = distrib;
-    tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
     option2(:,5) = option1(5) + getOptionMatrix(tempDistrib,step1Pose,L);
     
     %get the index of the option with the highest reward
@@ -105,7 +113,7 @@ for i = 1:nIters
     [~,dir2] = max(max1);
     %simulate movement of robot
     %step 1
-    switch dir1
+    switch dir1(dir2)
         case 1 %stay
             %no movement - no change to PoseR
         case 2 %left

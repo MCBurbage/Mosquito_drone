@@ -1,14 +1,15 @@
 function killTotal = StickyWallsGreedySim(L,runTime,velocityR,s,k,killRate)
 
 if nargin<1
-    runTime = 1000; %time to run simulation (s)
-    velocityR = 12; %robot velocity
-    s = 0.5;
-    L = 100;
-    k = 0.25;
+    L = 100; %size of workspace (m)
+    runTime = 100; %time to run simulation (s)
+    velocityR = 12; %robot velocity (m/s)
+    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
 end
 
+%determine whether to use existing Markov model or build a new one
 USE_EXISTING_MARKOV = false;
 if USE_EXISTING_MARKOV
     load('StationaryDist.mat');
@@ -17,18 +18,14 @@ else
     [Ps,w] = StickyWalls(L,k,s);
 end
 
-nM = 10000;
+nM = 10000; %starting number of mosquitoes
 timeStep = 1; %time lapse for each loop iteration (s)
 %find number of loop iterations
 nIters = velocityR*runTime/timeStep;
 
-%set mode for search path:
-%1 - wall following
-%2 - boustrophedon
-%3 - hybrid with wall following for one circuit then boustrophedon for remaining time
-
 %initialize robot position
-PoseR = [ceil(L/2) ceil(L/2)];
+%PoseR = [ceil(L/2) ceil(L/2)];
+PoseR = [1 1];
 
 %set whether to display progress plots
 showPlots = true;
@@ -80,78 +77,8 @@ for i = 1:nIters
         itrCnt = itrCnt + 1;
     end
     %compare mosquito populations in cells surrounding the robot
-    r = PoseR(1);
-    c = PoseR(2);
-    %set matrix of options
-    %[stay;left;right;up;down]
-    if r == 1
-        if c == 1
-            %top left corner - three options
-            options = [distrib(r,c);
-                0;
-                distrib(r,c+1);
-                0;
-                distrib(r+1,c)];
-        elseif c == L
-            %top right corner - three options
-            options = [distrib(r,c);
-                distrib(r,c-1);
-                0;
-                0;
-                distrib(r+1,c)];
-        else
-            %top edge - four options
-            options = [distrib(r,c);
-                distrib(r,c-1);
-                distrib(r,c+1);
-                0;
-                distrib(r+1,c)];
-        end
-    elseif r == L
-        if c == 1
-            %bottom left corner - three options
-            options = [distrib(r,c);
-                0;
-                distrib(r,c+1);
-                distrib(r-1,c)
-                0];
-        elseif c == L
-            %bottom right corner - three options
-            options = [distrib(r,c);
-                distrib(r,c-1);
-                0;
-                distrib(r-1,c);
-                0];
-        else
-            %bottom edge - four options
-            options = [distrib(r,c);
-                distrib(r,c-1);
-                distrib(r,c+1);
-                distrib(r-1,c);
-                0];
-        end
-    elseif c == 1
-        %left edge - four options
-        options = [distrib(r,c);
-            0;
-            distrib(r,c+1);
-            distrib(r-1,c);
-            distrib(r+1,c)];
-    elseif c == L
-        %right edge - four options
-        options = [distrib(r,c);
-            distrib(r,c-1);
-            0
-            distrib(r-1,c);
-            distrib(r+1,c)];
-    else
-        %interior cell - five options
-        options = [distrib(r,c);
-            distrib(r,c-1);
-            distrib(r,c+1);
-            distrib(r-1,c);
-            distrib(r+1,c)];
-    end
+    %set matrix of options for first move
+    options = getOptionMatrix(distrib,PoseR,L);
     %get the index of the option with the highest reward
     [~,dir] = max(options);
     %simulate movement of robot
@@ -193,4 +120,28 @@ for i = 1:nIters
         
         pause(0.02)
     end
+end
+end
+
+function options = getOptionMatrix(distrib,curCell,L)
+%augment the distribution matrix with a -1 edging to eliminate checking
+%corner and edge cases
+distrib = [-1*ones(L,1) distrib -1*ones(L,1)];
+distrib = [-1*ones(1,L+2); distrib; -1*ones(1,L+2)];
+%set current position, incremented to account for boundary edging
+r = curCell(1) + 1;
+c = curCell(2) + 1;
+%set a zero matrix for cells that are beyond the bounds of the
+%array
+if r <= 1 || c <= 1 || r > L+1 || c > L+1
+    options = zeros(5,1);
+    return
+end
+%[stay;left;right;up;down]
+    %interior cell - five options
+    options = [distrib(r,c);
+        distrib(r,c-1);
+        distrib(r,c+1);
+        distrib(r-1,c);
+        distrib(r+1,c)];
 end

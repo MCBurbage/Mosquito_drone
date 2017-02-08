@@ -199,17 +199,17 @@ for i=1:nIters
     
     %%%%%%%%%%%%%%%% UPDATE THE PLOT
     %set mosquito color based on state (red = alive, white = dead)
-    Cm = [ones(size(Sm)) +(~Sm) +(~Sm)];
-    set(hRob,'Xdata', PoseR(:,1),'Ydata', PoseR(:,2))
-    set(hRobScreenArea,'Xdata', Xnet,'Ydata', Ynet)
-    set(hMos,'Xdata', PoseM(:,1),'Ydata',PoseM(:,2),'Cdata',Cm)
-    %tidy up plot
-    uistack(hRob, 'top')
-    uistack(hRobScreenArea, 'top')
-    title({[num2str(i), ' of ', num2str(nIters)];[num2str(nM-popLiving), ' mosquitos killed']})
-    
     if showPlots
-        drawnow; pause(0.01);  %take these out if you don't need to watch it
+        Cm = [ones(size(Sm)) +(~Sm) +(~Sm)];
+        set(hRob,'Xdata', PoseR(:,1),'Ydata', PoseR(:,2))
+        set(hRobScreenArea,'Xdata', Xnet,'Ydata', Ynet)
+        set(hMos,'Xdata', PoseM(:,1),'Ydata',PoseM(:,2),'Cdata',Cm)
+        %tidy up plot
+        uistack(hRob, 'top')
+        uistack(hRobScreenArea, 'top')
+        title({[num2str(i), ' of ', num2str(nIters)];[num2str(nM-popLiving), ' mosquitos killed']})
+        
+        drawnow; pause(0.01);
     end
 end
 

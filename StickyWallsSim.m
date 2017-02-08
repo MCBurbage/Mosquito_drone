@@ -1,16 +1,30 @@
 function killTotal = StickyWallsSim(L,nIters,velocityR,s,k,killRate,MODE,sw)
+% Simulates a group of mosquitoes following a Markov process and a robot
+% using any of three pre-planned paths to hunt them
+% L = size of workspace (m)
+% nIters = number of time step iterations to run
+% velocityR = robot velocity (m/s)
+% s = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% k = mosquito probability of changing cells
+% killRate = percentage of population killed when robot visits cell
+% MODE = path planning mode
+% sw = path spacing
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 if nargin<1
+    L = 100; %size of workspace (m)
     nIters = 300; %number of loop iterations
     velocityR = 12; %robot velocity
-    s = 0.5;
-    L = 100;
-    k = 0.25;
+    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
-    MODE = 3;
+    MODE = 3; %path planning mode
     sw = 1; %width of robot
 end
 
+%determine whether to use existing Markov model or build a new one
 USE_EXISTING_MARKOV = false;
 if USE_EXISTING_MARKOV
     load('StationaryDist.mat');
@@ -19,7 +33,7 @@ else
     [Ps,w] = StickyWalls(L,k,s);
 end
 
-nM = 10000;
+nM = 10000; %starting number of mosquitoes
 timeStep = 1; %time lapse for each loop iteration (s)
 
 %set mode for search path:

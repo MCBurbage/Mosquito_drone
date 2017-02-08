@@ -80,8 +80,8 @@ while path(cnt-1,1)<L
     cnt = cnt+1;
 end
 
-%correct orientation for last step so that the path can be rejoined with
-%the start if it is looped
+%add another step to correct orientation for last step so that the path can 
+%be rejoined with the start if it is looped
 path(cnt,:) = [path(cnt-1,1:2) pi];
 
 %keep the path inside the boundaries

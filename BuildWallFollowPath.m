@@ -1,6 +1,6 @@
 function [path] = BuildWallFollowPath(h,L)
 % Builds a path that follows the walls of a square area bounded by (0,0) 
-% and (L,L).
+% and (L,L) spaced out from the edge by h/2.
 % The path is returned as an array of coordinates (x,y,theta).
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)

@@ -1,5 +1,17 @@
 function killTotal = StickyWallsGreedySim(L,runTime,velocityR,s,k,killRate)
+% Simulates a group of mosquitoes following a Markov process and a robot
+% using a 1-step greedy algorithm to hunt them
+% L = size of workspace (m)
+% runTime = time to run simulation (s)
+% velocityR = robot velocity (m/s)
+% s = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% k = mosquito probability of changing cells
+% killRate = percentage of population killed when robot visits cell
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%set default parameters
 if nargin<1
     L = 100; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
@@ -123,6 +135,7 @@ for i = 1:nIters
 end
 end
 
+%find the reward values for the move options
 function options = getOptionMatrix(distrib,curCell,L)
 %augment the distribution matrix with a -1 edging to eliminate checking
 %corner and edge cases

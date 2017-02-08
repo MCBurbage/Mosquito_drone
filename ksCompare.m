@@ -12,6 +12,7 @@ cnt = 1;
 testCnt = numel(stick)*numel(transitionPct);
 wtest = zeros(testCnt,L);
 
+%iterate through tests, saving data to wtest
 for i = 1:numel(stick)
     for j = 1:numel(transitionPct)
         s = stick(i);
@@ -23,13 +24,15 @@ for i = 1:numel(stick)
 end
 
 %plot results
+%k turns out to be independent so with three values of each parameter, only
+% rows 1, 4, and 7 need to be plotted
 figure(1)
 set(gcf,'color','w');
 x = 1:L;
 line(x,wtest(1,:))
 line(x,wtest(4,:))
 line(x,wtest(7,:))
-%then the lines need to be color coded and a legend added
+%then the lines need to be color coded and a legend added (not handled by this code)
 xlabel('X Position (m) for Y = 50m')
 ylabel('Fraction of Population')
 title('Cross-section of Population by Sticking Factor')

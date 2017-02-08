@@ -151,10 +151,15 @@ end
 Ps = sparse(P);
 
 %calculate the stationary distribution of the population
+%get the eigenvalues
 [V,~] = eigs(Ps');
-st = V(:,1).';
-st = st./sum(st);
-w = reshape(st,L,L);
+%the first column of the matrix is the stationary distribution
+w = V(:,1).';
+%normalize the stationary distribution to value probabilities [0,1]
+w = w./sum(w);
+%reshape the final distribution from a row vector to an LxL map
+w = reshape(w,L,L);
+%save the data
 if SAVE_INFO
     save('StationaryDist.mat','Ps','w');
 end

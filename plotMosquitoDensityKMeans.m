@@ -10,19 +10,22 @@ function plotMosquitoDensityKMeans(filename)
 if nargin<1
     return;
 end
+%set a number of means
 k = 15;
 
 %load the workspace file
 load(filename)
 
+%run k-means calculations
 [assign,centers] = kmeans(PoseM(:,1:2),k);
 
+%plot the means
 scatter(centers(:,1),centers(:,2))
 sd = zeros(1,k);
 map = zeros(L,L);
-%X = [1:L]';
-%Y = [1:L]';
+
 for i=1:k
+    %calculate standard deviation for individuals assigned to the cluster
     mask(:,1) = (assign==i);
     mask(:,2) = mask(:,1);
     currentPose = PoseM(:,1:2).*mask;
@@ -46,8 +49,6 @@ image(displayimage)
 hold on
 scatter(PoseM(:,2),PoseM(:,1),'.','k')
 contour(map)
-
-a=1;
 end
 
 function d = dist(a,b)% norm 2 distance between two vectors

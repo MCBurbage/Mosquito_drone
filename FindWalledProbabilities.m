@@ -1,4 +1,8 @@
 function P = FindWalledProbabilities(L)
+% Simulates a group of mosquitoes to build a Markov transition matrix
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %set the number of iterations
 n = 10^7;

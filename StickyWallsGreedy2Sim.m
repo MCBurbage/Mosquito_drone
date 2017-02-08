@@ -1,5 +1,17 @@
 function killTotal = StickyWallsGreedy2Sim(L,runTime,velocityR,s,k,killRate)
+% Simulates a group of mosquitoes following a Markov process and a robot
+% using a 2-step greedy algorithm to hunt them
+% L = size of workspace (m)
+% runTime = time to run simulation (s)
+% velocityR = robot velocity (m/s)
+% s = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% k = mosquito probability of changing cells
+% killRate = percentage of population killed when robot visits cell
+%
+% Authors: Mary Burbage (mcfieler@uh.edu)
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%set default parameters
 if nargin<1
     L = 100; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
@@ -9,6 +21,7 @@ if nargin<1
     killRate = 0.9; %percentage of population killed when robot visits cell
 end
 
+%determine whether to use existing Markov model or build a new one
 USE_EXISTING_MARKOV = false;
 if USE_EXISTING_MARKOV
     load('StationaryDist.mat');
@@ -17,7 +30,7 @@ else
     [Ps,w] = StickyWalls(L,k,s);
 end
 
-nM = 10000;
+nM = 10000; %starting number of mosquitoes
 timeStep = 1; %time lapse for each loop iteration (s)
 %find number of loop iterations
 nIters = velocityR*runTime/timeStep;
@@ -57,7 +70,7 @@ if showPlots
 end
 
 %initialize iteration counter for mosquito movement
-itrCnt = 1;
+itrCnt = 0;
 
 %iterate movement of the mosquitoes and robot
 for i = 1:nIters
@@ -75,37 +88,63 @@ for i = 1:nIters
     %compare mosquito populations in cells surrounding the robot
     %set matrix of options for first move
     option1 = getOptionMatrix(distrib,PoseR,L);
+    
     %set matrix of options for second move
     option2 = zeros(5,5);
+    
+    %stay
     step1Pose = PoseR;
+    %set up temporary distribution matrix
     tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
+    %calculate the reward for the second step options
     option2(:,1) = option1(1) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %left
     step1Pose = [PoseR(1),PoseR(2)-1];
+    %set up temporary distribution matrix
     tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
+    %calculate the reward for the second step options
     option2(:,2) = option1(2) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %right
     step1Pose = [PoseR(1),PoseR(2)+1];
+    %set up temporary distribution matrix
     tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
+    %calculate the reward for the second step options
     option2(:,3) = option1(3) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %up
     step1Pose = [PoseR(1)-1,PoseR(2)];
+    %set up temporary distribution matrix
     tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
+    %calculate the reward for the second step options
     option2(:,4) = option1(4) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %down
     step1Pose = [PoseR(1)+1,PoseR(2)];
+    %set up temporary distribution matrix
     tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
     end
+    %calculate the reward for the second step options
     option2(:,5) = option1(5) + getOptionMatrix(tempDistrib,step1Pose,L);
     
     %get the index of the option with the highest reward
@@ -174,6 +213,7 @@ for i = 1:nIters
 end
 end
 
+%find the reward values for the move options
 function options = getOptionMatrix(distrib,curCell,L)
 %augment the distribution matrix with a -1 edging to eliminate checking
 %corner and edge cases

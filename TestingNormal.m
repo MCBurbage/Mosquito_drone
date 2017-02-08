@@ -1,15 +1,14 @@
 %initialize variables
-nM = 10000;
-L = 100;
-nIters = 2000;
-timeStep = 1;
-mu = [L/2 L/2];
-sigma = L/10;
-cumIters = 0;
-numKilled = 0;
+nM = 10000; %starting number of mosquitoes
+L = 100; %size of workspace (m)
+nIters = 2000; %number of time steps to run mosquito simulation between robot runs
+timeStep = 1; %length of time in one loop iteration (s)
+mu = [L/2 L/2]; %center of mosquito distribution
+sigma = L/10; %standard deviation of mosquito distribution
+cumIters = 0; %cumulative iteration counter
+numKilled = 0; %number of mosquitoes killed
 
 %initialize mosquito positions randomly
-%PoseM = [L*rand(nM,2),2*pi*rand(nM,1),ones(nM,1)]; %uniform distribution
 PoseM = [repmat(mu,nM,1) + randn(nM,2)*sigma,2*pi*rand(nM,1),ones(nM,1)]; %normal distribution
 
 %display scatter plot of positions
@@ -41,6 +40,7 @@ for i=1:10
     %simulate mosquitoes
     PoseM = MosquitoFlightSimNormal(PoseM,L,nIters,1,mu,sigma);
     cumIters = cumIters + nIters;
+    %select living mosquitoes to plot
     PlotM = PoseM(logical(PoseM(:,4)),:);
     
     %display scatter plot of positions
@@ -66,6 +66,7 @@ for i=1:10
     %kill some mosquitoes
     PoseM = MosquitoKiller(PoseM,L);
     numKilled = sum(PoseM(:,4)==0);
+    %select living mosquitoes to plot
     PlotM = PoseM(logical(PoseM(:,4)),:);
     
     %display scatter plot of positions

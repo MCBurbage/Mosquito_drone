@@ -1,9 +1,8 @@
 function P = BuildMarkovMatrixWalledK(L)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% This function simulates mosquito motion in an LxL walled environment to
-% establish the Markov state transition probability matrix for mosquitoes
-% in a given cell.  Mosquito samples are pulled from a uniform random
-% distribution.
+% This function uses a value k as a probability of leaving the current cell
+% in an LxL walled environment to establish the Markov state transition 
+% probability matrix.
 %
 % Author:  Mary Burbage
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,3 +1,8 @@
+%calculate the number of mosquitoes surviving at each time step when they
+%instantly reform a normal distribution at every iteration and the robot
+%kills a percentage of them in a certain area at the center of the
+%distribution
+
 nM = 10000; %number of mosquitoes/particles
 L = 100;    %length of workspace
 mu = L/2;   %mean of distribution

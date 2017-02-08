@@ -30,6 +30,8 @@ for i=1:nM
     %calculate difference from PoseM(i) to every x and y location
     xDiff = (x-PoseM(i,1)).^2;
     yDiff = (y-PoseM(i,2)).^2;
+    %if the workspace is assumed to be continuous, find the closer of two
+    %distances - direct and wrapped
     if wrapWorkspace
         xDiff = xDiff.*(xDiff<=2500) + (x+(L-PoseM(i,1))).^2.*(xDiff>2500);
         xDiff = xDiff.*(xDiff<=2500) + (PoseM(i,1)+(L-x)).^2.*(xDiff>2500);

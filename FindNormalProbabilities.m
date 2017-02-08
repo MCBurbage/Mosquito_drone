@@ -1,3 +1,6 @@
+%find the cell transition probabilities for mosquitoes biased toward a
+%normal distribution
+
 clear
 clc
 
@@ -8,6 +11,8 @@ L = 100;
 %initialize the probability matrix with a 3x3 element for each cell
 N = zeros(ceil(L/2),ceil(L/2),3,3);
 
+%iterate through one quadrant of the workspace - others will be mirror
+%images of it due to symmetry
 for i = 1:ceil(L/2)
     for j = 1:ceil(L/2)
         disp(['calculating cell (',num2str(i),',',num2str(j),')'])

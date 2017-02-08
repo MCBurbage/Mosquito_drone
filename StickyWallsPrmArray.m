@@ -17,8 +17,11 @@ rowSpacing = [L L/50 L/20 L/10 L/5];
 %path mode
 mode = [1 2 3];
 
+%get the number of tests to be performed
 testCnt = numel(testTime)*numel(velocityR)*numel(stick)*numel(transitionPct)*numel(killRate)*numel(mode)*numel(rowSpacing);
+%initialize the test data table
 testResults = zeros(testCnt,8);
+%initialize the test counter
 cnt = 1;
 
 for i = 1:numel(testTime)
@@ -36,6 +39,7 @@ for i = 1:numel(testTime)
                             end
                             disp(['Test ',num2str(cnt),' of ',num2str(testCnt)])
                             disp(['i=',num2str(i),', j=',num2str(j),', k=',num2str(k),', l=',num2str(l),', m=',num2str(m),', n=',num2str(n),', o=',num2str(o)])
+                            %set test result parametric information
                             testResults(cnt,1) = testTime(i);
                             testResults(cnt,2) = velocityR(j);
                             testResults(cnt,3) = stick(k);
@@ -43,7 +47,9 @@ for i = 1:numel(testTime)
                             testResults(cnt,5) = killRate(m);
                             testResults(cnt,6) = mode(n);
                             testResults(cnt,7) = rowSpacing(o);
+                            %run simulation
                             testResults(cnt,8) = StickyWallsSim(L,testTime(i),velocityR(j),stick(k),transitionPct(l),killRate(m),mode(n),rowSpacing(o));
+                            %increment the test counter
                             cnt = cnt+1;
                         end
                     end

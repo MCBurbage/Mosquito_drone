@@ -1,7 +1,7 @@
 function PoseM = MosquitoFlightSimWalled(PoseM,L,nIters,timeStep)
-% Simulates a group of mosquitoes in an area LxL meters using a random
-% walk model that is biased toward a normal distribution centered at
-% (mu(1),mu(2)) with a standard deviation of sigma.
+% Simulates a group of mosquitoes in an area LxL meters using an unbiased
+% random walk model in a walled environment.  Mosquitoes "bounce" off the 
+% walls.
 %
 % Authors: Mary Burbage (mcfieler@uh.edu), Aaron Becker (atbecker@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -80,5 +80,4 @@ for i = 1:nIters
     
     %set the return value
     PoseM = [X,Y,theta,Sm];
-
 end

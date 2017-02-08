@@ -1,10 +1,19 @@
+%initialize parameters
 mu = 0;
 sigma = 2;
 N = 5;
+
+%find the cell proportions for the normal distribution
 cell = zeros(1,N);
 for i = 1:N
     cell(i) = normcdf(i,mu,sigma) - normcdf(i-1,mu,sigma);
 end
+
+%build the whole distribution for display
+dist = [fliplr(cell),cell(2:N)];
+
+% These are the equations that must be solved to develop the transition
+% matrix
 
 % P(3,2) = cell(2)/(cell(2)+cell(4))*h;
 % P(3,3) = 1-h;
@@ -65,11 +74,16 @@ k = zeros(1,N);
 %general formula
 %k(i) = [cell(i)/cell(sigma)]*[(cell(i-1)+(cell(i+1))/(cell(sigma-1)+cell(sigma+1))]*k(sigma);
 fact = ksigma/(cell(sigma)*(cell(sigma-1)+cell(sigma+1)));
+%calculate the factor for the first cell, which is a little different 
+%because it must not include non-existant cells
 i = 1;
 k(i) = cell(i)*cell(i+1)*fact;
+%calculate the values for the central cells
 for i = 2:N-1
     k(i) = cell(i)*(cell(i-1)+cell(i+1))*fact;
 end
+%calculate the factor for the last cell, which is a little different 
+%because it must not include non-existant cells
 i = N;
 k(i) = cell(i)*cell(i-1)*fact;
 
@@ -85,28 +99,35 @@ if k(1) > 0.5
     return;
 end
 
+%fill the transition matrix
+%initialize the matrix
 P = zeros(N*2-1,N*2-1);
+%set the first row values
 i = 1;
 j = N-(i-1);
 P(i,i+1) = k(j);
 P(i,i) = 1-k(j);
+%set the left interior row values
 for i = 2:N-1
     j = N-(i-1);
     P(i,i-1) = cell(j+1)/(cell(j+1)+cell(j-1))*k(j);
     P(i,i+1) = cell(j-1)/(cell(j+1)+cell(j-1))*k(j);
     P(i,i) = 1-k(j);
 end
+%set the middle row values
 i = N;
 j = 1;
 P(i,i-1) = k(j);
 P(i,i+1) = k(j);
 P(i,i) = 1-2*k(j);
+%set the right interior row values
 for i = N+1:2*N-2
     j = i-(N-1);
     P(i,i-1) = cell(j-1)/(cell(j+1)+cell(j-1))*k(j);
     P(i,i+1) = cell(j+1)/(cell(j+1)+cell(j-1))*k(j);
     P(i,i) = 1-k(j);
 end
+%set the last row values
 i = 2*N-1;
 j = i-(N-1);
 P(i,i-1) = k(j);
@@ -116,9 +137,9 @@ P(i,i) = 1-k(j);
 Ps = sparse(P);
 
 %calculate the stationary distribution of the population
+%Find the eigenvalues
 [V,~] = eigs(Ps');
+%The first column holds the stationary distribution
 st = V(:,1).';
+%Normalize the stationary distribution to be proper probabilities [0,1]
 st = st./sum(st);
-
-dist = [fliplr(cell),cell(2:N)];
-%bar([dist', st'])

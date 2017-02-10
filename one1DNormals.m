@@ -2,7 +2,7 @@
 
 
 %initialize variables
-L = 75; %workspace edge length
+L = 99; %workspace edge length
 cellSize = 1; %
 mu = [L/2 L/2]; % average
 sigma = [L/10 L/10]; %standard deviation of distribution
@@ -67,9 +67,8 @@ BeqBot = w(1:halfCells)';
 Aeq = [AeqTop;AeqBot];
 Beq = [BeqTop;BeqBot];
 
-%Set the minimization target for the first entry (edge of distribution)
-f = zeros(sz,1);
-f(1) = 1;  %minimize the first entry
+%Set the minimization target for all entries
+f = ones(sz,1);
 
 %Set the bounds on the solutions to be proper probabilities
 %between 0 and 1

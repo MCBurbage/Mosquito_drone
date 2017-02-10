@@ -2,7 +2,7 @@
 
 
 %initialize variables
-L = 9; %workspace edge length
+L = 45; %workspace edge length
 cellSize = 1; %
 mu = [L/2 L/2]; % average
 sigma = [L/10 L/10]; %standard deviation of distribution
@@ -120,8 +120,6 @@ P2D = zeros(nCells*nCells,nCells*nCells);
 %top left
 i = 1;
 j = 1;
-idx1Dv = sub2ind([L 1], i, i);
-idx1Dh = sub2ind([L 1], j, j);
 idx2D = sub2ind([L L], i, j);
 %same row
 P2D(idx2D, idx2D) = P(i,i)*P(j,j);
@@ -133,127 +131,111 @@ P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
 %top right
 i = 1;
 j = L;
-idx1Dv = sub2ind([L 1], i, i);
-idx1Dh = sub2ind([L 1], j, j);
 idx2D = sub2ind([L L], i, j);
 %same row
-P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
+P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
 %row below
-P2D(idx2D, idx2D+1-L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh-L);
-P2D(idx2D, idx2D+1) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh);
+P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
 
 %bottom left
 i = L;
 j = 1;
-idx1Dv = sub2ind([L 1], i, i);
-idx1Dh = sub2ind([L 1], j, j);
 idx2D = sub2ind([L L], i, j);
 %row above
-P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
-P2D(idx2D, idx2D-1+L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh+L);
+P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
 %same row
-P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
-P2D(idx2D, idx2D+L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh+L);
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
 
 %bottom right
 i = L;
 j = L;
-idx1Dv = sub2ind([L 1], i, i);
-idx1Dh = sub2ind([L 1], j, j);
 idx2D = sub2ind([L L], i, j);
 %row above
-P2D(idx2D, idx2D-1-L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh-L);
-P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
+P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
 %same row
-P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
+P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
 
 %handle edge cells
 %left edge
 j = 1;
 for i = 2:L-1
-    idx1Dv = sub2ind([L 1], i, i);
-    idx1Dh = sub2ind([L 1], j, j);
     idx2D = sub2ind([L L], i, j);
     %row above
-    P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D-1+L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+    P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
     %same row
-    P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D+L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
     %row below
-    P2D(idx2D, idx2D+1) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D+1+L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+    P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
 end
 
 %right edge
 j = L;
 for i = 2:L-1
-    idx1Dv = sub2ind([L L], i, i);
-    idx1Dh = sub2ind([L L], j, j);
     idx2D = sub2ind([L L], i, j);
     %row above
-    P2D(idx2D, idx2D-1-L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
+    P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
     %same row
-    P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
     %row below
-    P2D(idx2D, idx2D+1-L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D+1) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh);
+    P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
 end
 
 %top edge
 i = 1;
 for j = 2:L-1
-    idx1Dv = sub2ind([L L], i, i);
-    idx1Dh = sub2ind([L L], j, j);
     idx2D = sub2ind([L L], i, j);
     %same row
-    P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D+L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
     %row below
-    P2D(idx2D, idx2D+1-L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D+1) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D+1+L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+    P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
 end
 
 %bottom edge
 i = L;
 for j = 2:L-1
-    idx1Dv = sub2ind([L L], i, i);
-    idx1Dh = sub2ind([L L], j, j);
     idx2D = sub2ind([L L], i, j);
     %row above
-    P2D(idx2D, idx2D-1-L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D-1+L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+    P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
     %same row
-    P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-    P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
-    P2D(idx2D, idx2D+L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh+L);
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
 end
 
 %handle interior cells
 for i = 2:L-1
     for j = 2:L-1
-        idx1Dv = sub2ind([L L], i, i);
-        idx1Dh = sub2ind([L L], j, j);
         idx2D = sub2ind([L L], i, j);
         %row above
-        P2D(idx2D, idx2D-1-L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh-L);
-        P2D(idx2D, idx2D-1) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh);
-        P2D(idx2D, idx2D-1+L) = P(idx1Dv,idx1Dv-L)*P(idx1Dh,idx1Dh+L);
+        P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+        P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+        P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
         %same row
-        P2D(idx2D, idx2D-L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh-L);
-        P2D(idx2D, idx2D) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh);
-        P2D(idx2D, idx2D+L) = P(idx1Dv,idx1Dv)*P(idx1Dh,idx1Dh+L);
+        P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+        P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+        P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
         %row below
-        P2D(idx2D, idx2D+1-L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh-L);
-        P2D(idx2D, idx2D+1) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh);
-        P2D(idx2D, idx2D+1+L) = P(idx1Dv,idx1Dv+L)*P(idx1Dh,idx1Dh+L);
+        P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+        P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+        P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
     end
 end
 
@@ -269,6 +251,6 @@ w2D = w2D./sum(w2D);
 %reshape the final distribution from a row vector to an LxL map
 w2D = reshape(w2D,L,L);
 %save the data
-if SAVE_INFO
+if false %SAVE_INFO
     save('NormalStationaryDist.mat','Ps2D','w2D');
 end

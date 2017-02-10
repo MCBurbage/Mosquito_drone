@@ -2,7 +2,7 @@
 
 
 %initialize variables
-L = 9; %workspace edge length
+L = 75; %workspace edge length
 cellSize = 1; %
 mu = [L/2 L/2]; % average
 sigma = [L/10 L/10]; %standard deviation of distribution

@@ -27,7 +27,7 @@ if USE_EXISTING_MARKOV
     load('StationaryDist.mat');
     L = sqrt(numel(w));
 else
-    [Ps,w] = StickyWalls(L,k,s);
+    [Ps,w] = FindStickyWallTransitions(L,k,s);
 end
 
 nM = 10000; %starting number of mosquitoes

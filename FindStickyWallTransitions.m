@@ -1,4 +1,4 @@
-function [Ps, w] = StickyWalls(L,k,s)
+function [Ps, w] = FindStickyWallTransitions(L,k,s)
 % Builds a Markov transition matrix and stationary distribution for moving
 % particles in a workspace.
 % L is the size of the workspace

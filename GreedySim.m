@@ -1,33 +1,38 @@
-function killTotal = StickyWallsGreedySim(L,runTime,velocityR,s,k,killRate)
+function killTotal = GreedySim(distType,L,runTime,velocityR,prm1,prm2,killRate)
 % Simulates a group of mosquitoes following a Markov process and a robot
 % using a 1-step greedy algorithm to hunt them
+% distType = type of distribution ('StickyWalls' or 'Normal')
 % L = size of workspace (m)
 % runTime = time to run simulation (s)
 % velocityR = robot velocity (m/s)
-% s = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-% k = mosquito probability of changing cells
 % killRate = percentage of population killed when robot visits cell
+% distribution parameters
+% sticky walls:
+% prm1 = mosquito probability of changing cells
+% prm2 = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% normal:
+% prm1 = standard deviation of distribution
+% prm2 = unused
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %set default parameters
 if nargin<1
+    distType = 'StickyWalls';
     L = 100; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
     velocityR = 12; %robot velocity (m/s)
-    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-    k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
+    prm1 = 0.25; %mosquito probability of changing cells
+    prm2 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
-%determine whether to use existing Markov model or build a new one
-USE_EXISTING_MARKOV = false;
-if USE_EXISTING_MARKOV
-    load('StationaryDist.mat');
-    L = sqrt(numel(w));
-else
-    [Ps,w] = FindStickyWallTransitions(L,k,s);
+if strcmp(distType,'StickyWalls')
+    [Ps,w] = FindStickyWallTransitions(L,prm1,prm2);
+elseif strcmp(distType,'Normal')
+    mu = [L/2 L/2]; %mean must be at the center to take advantage of symmetry
+    [Ps,w] = Find2DNormalTransitions(L,mu,prm1);
 end
 
 nM = 10000; %starting number of mosquitoes
@@ -40,7 +45,7 @@ nIters = velocityR*runTime/timeStep;
 PoseR = [1 1];
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %set initial mosquito distribution
 distrib = nM * w;
@@ -119,7 +124,7 @@ for i = 1:nIters
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(1)],'Ydata', [yd,PoseR(2)]);
         set(hRob,'Xdata',PoseR(1),'Ydata',PoseR(2));
-        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(killTotal), ' mosquitoes killed']})
+        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']})
         
         %update the distribution map
         figure(2); set(gcf,'color','w');

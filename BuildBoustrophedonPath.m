@@ -48,10 +48,10 @@ while path(cnt-1,1)<L
     %move up/down a step
     path(cnt,1) = path(cnt-1,1);
     if startUp
-        path(cnt,2) = L-h/2;
+        path(cnt,2) = L-0.5;
         path(cnt,3) = pi/2;
     else
-        path(cnt,2) = h/2;
+        path(cnt,2) = 0.5;
         path(cnt,3) = -pi/2;
     end
     cnt = cnt+1;
@@ -65,10 +65,10 @@ while path(cnt-1,1)<L
     %move down/up a step
     path(cnt,1) = path(cnt-1,1);
     if startUp
-        path(cnt,2) = h/2;
+        path(cnt,2) = 0.5;
         path(cnt,3) = -pi/2;
     else
-        path(cnt,2) = L-h/2;
+        path(cnt,2) = L-0.5;
         path(cnt,3) = pi/2;
     end
     cnt = cnt+1;

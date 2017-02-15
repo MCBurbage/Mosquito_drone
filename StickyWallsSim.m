@@ -20,18 +20,11 @@ if nargin<1
     s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
     k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
-    MODE = 3; %path planning mode
-    sw = 1; %width of robot
+    MODE = 4; %path planning mode
+    sw = 1; %width of boustrophedon row spacing
 end
 
-%determine whether to use existing Markov model or build a new one
-USE_EXISTING_MARKOV = false;
-if USE_EXISTING_MARKOV
-    load('StationaryDist.mat');
-    L = sqrt(numel(w));
-else
-    [Ps,w] = StickyWalls(L,k,s);
-end
+[Ps,w] = FindStickyWallTransitions(L,k,s);
 
 nM = 10000; %starting number of mosquitoes
 timeStep = 1; %time lapse for each loop iteration (s)
@@ -40,27 +33,35 @@ timeStep = 1; %time lapse for each loop iteration (s)
 %1 - wall following
 %2 - boustrophedon
 %3 - hybrid with wall following for one circuit then boustrophedon for remaining time
+%4 - squarrel beginning along walls and spiralling in
 
 %initialize robot position
-PoseR = [sw/2 sw/2 0];
+PoseR = [0.5 0.5 0];
 
 %set whether to display progress plots
-showPlots = false;
+showPlots = true;
 
 %calculate the path
 if MODE == 1
-    pathR = BuildWallFollowPath(sw,L);
+    pathR = BuildWallFollowPath(L);
 elseif MODE == 2
-    pathR = BuildBoustrophedonPath(sw/2,sw/2,PoseR,sw,L);
+    pathR = BuildBoustrophedonPath(PoseR(1),PoseR(2),PoseR,sw,L);
 elseif MODE == 3
     %build wall-following path
-    pathR = BuildWallFollowPath(sw,L);
+    pathR = BuildWallFollowPath(L);
     %build and add on a boustrophedon path
-    pathR = [pathR; BuildBoustrophedonPath(sw/2,sw/2,PoseR,sw,L)];
+    pathR = [pathR; BuildBoustrophedonPath(PoseR(1),PoseR(2),PoseR,sw,L)];
     %add path segments to return to the start
     %segment to move back to starting x point
     [n,~] = size(pathR);
     pathR = [pathR; [pathR(1,1) pathR(n,2) -pi]];
+elseif MODE == 4
+    %build squarrel path from center out
+    pathR = BuildSquarrelPath(L/2,L/2,sw,L);
+    %reverse squarrel path to be from edge in
+    pathR = flipud(pathR);
+    %adjust directions for reversed path
+    pathR(:,3) = pathR(:,3) - pi/2;
 else
     disp('No valid mode selected')
     return;
@@ -69,7 +70,7 @@ end
 %set amount robot moves in one time step
 movement = velocityR*timeStep;
 %Find path segments for each time step
-region = findregion(pathR,nIters,PoseR,movement,true);
+region = FindRegionNonOrthogonal(pathR,nIters,PoseR,movement,true);
 %set the region counter for the first region
 cnt_reg = 1;
 %set initial mosquito distribution
@@ -143,7 +144,7 @@ for i = 1:nIters
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,cur_region(:,1)'],'Ydata', [yd,cur_region(:,2)']);
         set(hRob,'Xdata',PoseR(:,1),'Ydata',PoseR(:,2));
-        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(killTotal), ' mosquitoes killed']})
+        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']})
         
         %update the distribution map
         figure(2); set(gcf,'color','w');

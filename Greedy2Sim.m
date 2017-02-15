@@ -1,33 +1,38 @@
-function killTotal = StickyWallsGreedySim(L,runTime,velocityR,s,k,killRate)
+function killTotal = Greedy2Sim(distType,L,runTime,velocityR,prm1,prm2,killRate)
 % Simulates a group of mosquitoes following a Markov process and a robot
-% using a 1-step greedy algorithm to hunt them
+% using a 2-step greedy algorithm to hunt them
+% distType = type of distribution ('StickyWalls' or 'Normal')
 % L = size of workspace (m)
 % runTime = time to run simulation (s)
 % velocityR = robot velocity (m/s)
-% s = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-% k = mosquito probability of changing cells
 % killRate = percentage of population killed when robot visits cell
+% distribution parameters
+% sticky walls:
+% prm1 = mosquito probability of changing cells
+% prm2 = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% normal:
+% prm1 = standard deviation of distribution
+% prm2 = unused
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %set default parameters
 if nargin<1
+    distType = 'StickyWalls';
     L = 100; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
     velocityR = 12; %robot velocity (m/s)
-    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-    k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
+    prm1 = 0.25; %mosquito probability of changing cells
+    prm2 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
-%determine whether to use existing Markov model or build a new one
-USE_EXISTING_MARKOV = false;
-if USE_EXISTING_MARKOV
-    load('StationaryDist.mat');
-    L = sqrt(numel(w));
-else
-    [Ps,w] = FindStickyWallTransitions(L,k,s);
+if strcmp(distType,'StickyWalls')
+    [Ps,w] = FindStickyWallTransitions(L,prm1,prm2);
+elseif strcmp(distType,'Normal')
+    mu = [L/2 L/2]; %mean must be at the center to take advantage of symmetry
+    [Ps,w] = Find2DNormalTransitions(L,mu,prm1);
 end
 
 nM = 10000; %starting number of mosquitoes
@@ -40,7 +45,7 @@ nIters = velocityR*runTime/timeStep;
 PoseR = [1 1];
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %set initial mosquito distribution
 distrib = nM * w;
@@ -70,7 +75,7 @@ if showPlots
 end
 
 %initialize iteration counter for mosquito movement
-itrCnt = 1;
+itrCnt = 0;
 
 %iterate movement of the mosquitoes and robot
 for i = 1:nIters
@@ -83,18 +88,76 @@ for i = 1:nIters
         %shape distribution as a map
         distrib = reshape(distrib, L, L);
         %reset iteration counter
-        itrCnt = 1;
-    else
-        %increment iteration counter
-        itrCnt = itrCnt + 1;
+        itrCnt = 0;
     end
     %compare mosquito populations in cells surrounding the robot
     %set matrix of options for first move
-    options = getOptionMatrix(distrib,PoseR,L);
+    option1 = getOptionMatrix(distrib,PoseR,L);
+    
+    %set matrix of options for second move
+    option2 = zeros(5,5);
+    
+    %stay
+    step1Pose = PoseR;
+    %set up temporary distribution matrix
+    tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
+    %calculate the reward for the second step options
+    option2(:,1) = option1(1) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %left
+    step1Pose = [PoseR(1),PoseR(2)-1];
+    %set up temporary distribution matrix
+    tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
+    %calculate the reward for the second step options
+    option2(:,2) = option1(2) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %right
+    step1Pose = [PoseR(1),PoseR(2)+1];
+    %set up temporary distribution matrix
+    tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
+    %calculate the reward for the second step options
+    option2(:,3) = option1(3) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %up
+    step1Pose = [PoseR(1)-1,PoseR(2)];
+    %set up temporary distribution matrix
+    tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
+    %calculate the reward for the second step options
+    option2(:,4) = option1(4) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
+    %down
+    step1Pose = [PoseR(1)+1,PoseR(2)];
+    %set up temporary distribution matrix
+    tempDistrib = distrib;
+    %if the pose is within the workspace, kill mosquitoes in that cell
+    if ~any(step1Pose<1) && ~any(step1Pose>L)
+        tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+    end
+    %calculate the reward for the second step options
+    option2(:,5) = option1(5) + getOptionMatrix(tempDistrib,step1Pose,L);
+    
     %get the index of the option with the highest reward
-    [~,dir] = max(options);
+    [max1,dir1] = max(option2);
+    [~,dir2] = max(max1);
     %simulate movement of robot
-    switch dir
+    %step 1
+    switch dir1(dir2)
         case 1 %stay
             %no movement - no change to PoseR
         case 2 %left
@@ -106,6 +169,26 @@ for i = 1:nIters
         case 5 %down
             PoseR(1) = PoseR(1)+1;
     end
+    %increment iteration counter
+    itrCnt = itrCnt + 1;
+    %calculate kill and update distribution
+    %multiply the distribution by the survival rate
+    distrib(PoseR(1),PoseR(2)) = distrib(PoseR(1),PoseR(2))*(1-killRate);
+    %step 2
+    switch dir2
+        case 1 %stay
+            %no movement - no change to PoseR
+        case 2 %left
+            PoseR(2) = PoseR(2)-1;
+        case 3 %right
+            PoseR(2) = PoseR(2)+1;
+        case 4 %up
+            PoseR(1) = PoseR(1)-1;
+        case 5 %down
+            PoseR(1) = PoseR(1)+1;
+    end
+    %increment iteration counter
+    itrCnt = itrCnt + 1;
     %calculate kill and update distribution
     %multiply the distribution by the survival rate
     distrib(PoseR(1),PoseR(2)) = distrib(PoseR(1),PoseR(2))*(1-killRate);
@@ -119,7 +202,7 @@ for i = 1:nIters
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(1)],'Ydata', [yd,PoseR(2)]);
         set(hRob,'Xdata',PoseR(1),'Ydata',PoseR(2));
-        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(killTotal), ' mosquitoes killed']})
+        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']})
         
         %update the distribution map
         figure(2); set(gcf,'color','w');

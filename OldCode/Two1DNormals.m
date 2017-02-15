@@ -1,106 +1,255 @@
-%initialize variables
-nM = 10000; % number initial mosquitos
-L = 10; %workspace edge length
-cellSize = 1; % 
-mu = [L/2 L/2]; % average
-sigma = [L/10 L/10]; 
+%NOTE:  This only works for an odd number of cells.
 
-nCells = L/cellSize;
-p = zeros(nCells,2);
+
+%initialize variables
+L = 99; %workspace edge length
+cellSize = 1; %
+mu = [L/2 L/2]; % average
+sigma = [L/10 L/10]; %standard deviation of distribution
+
+nCells = L/cellSize; %total number of cells
+w = zeros(1,nCells); %initialize the distribution
 
 %calculate percentage of population in each cell
-for i = 1:nCells
-    p(1,i) = (normcdf(i*cellSize,mu(1),sigma(1)) - normcdf((i-1)*cellSize,mu(1),sigma(1)));
-    p(2,i) = (normcdf(i*cellSize,mu(2),sigma(2)) - normcdf((i-1)*cellSize,mu(2),sigma(2)));
-end
-
-wx = p(1,:);
-wy = p(2,:);
-
-%initialize the transition matrices with zeros
-Px = zeros(nCells,nCells);
-Py = zeros(nCells,nCells);
-
-%solve for the transitions from cells at either end of the distribution
-%X
-
-A = [wx(1) 0 wx(2); 1 1 0; 0 wx(1) -wx(2)];
-B = [wx(1); 1; 0];
-X = linsolve(A, B);
-Px(1,1) = X(1);
-Px(1,2) = X(2);
-Px(2,1) = X(3);
-Px(nCells,nCells) = X(1);
-Px(nCells,nCells-1) = X(2);
-Px(nCells-1, nCells) = X(3);
-% A = [1 1; wx(1) wx(2)];
-% B = [1; wx(1)];
-% X = linsolve(A, B);
-% Px(1,1) = X(1);
-% Px(1,2) = X(2);
-% Px(nCells,nCells) = X(1);
-% Px(nCells,nCells - 1) = X(2);
-%Y
-% A = [1 1; wy(1) wy(2)];
-% B = [1; wy(1)];
-% X = linsolve(A, B);
-% Py(1,1) = X(1);
-% Py(1,2) = X(2);
-% Py(nCells,nCells) = X(1);
-% Py(nCells,nCells - 1) = X(2);
-
-%solve for the transitions from cell at the center of the distribution
-%NOTE:  this won't work for an uneven number of cells
-%X
-% A = [1 1 1; wx(nCells/2-1) wx(nCells/2) wx(nCells/2+1); 1 0 -1];
-% B = [1; wx(nCells/2); 0];
-% X = linsolve(A, B);
-% Px(nCells/2,nCells/2-1) = X(1);
-% Px(nCells/2,nCells/2) = X(2);
-% Px(nCells/2,nCells/2+1) = X(3);
-% %Y
-% A = [1 1 1; wy(nCells/2-1) wy(nCells/2) wy(nCells/2+1); 1 0 -1];
-% B = [1; wy(nCells/2); 0];
-% X = linsolve(A, B);
-% Py(nCells/2,nCells/2-1) = X(1);
-% Py(nCells/2,nCells/2) = X(2);
-% Py(nCells/2,nCells/2+1) = X(3);
-
-
+w(1) = normcdf(cellSize,mu(1),sigma(1));
 for i = 2:nCells-1
-    %X
-    A = [wx(i) 0 wx(i+1); 1 1 0; 0 wx(i) -wx(i+1)];
-    B = [wx(i)-wx(i-1)*Px(i-1,i); 1-wx(i-1)*Px(i,i-1); 0];
-    X = linsolve(A, B);
-    Px(i,i) = X(1);
-    Px(i,i+1) = X(2);
-    Px(i+1,i) = X(3);
-    Px(nCells,nCells) = X(1);
-    Px(nCells,nCells - 1) = X(2);
-    Px(nCells - 1, nCells) = X(3);
-    %     A = [1 1 1; wx(i-1) wx(i) wx(i+1); 0 wx(i) 0];
-    %     B = [1; wx(i); wx(i-1)*Px(i-1,i)];
-    %     X = linsolve(A, B);
-    %     Px(i,i-1) = X(1);
-    %     Px(i,i) = X(2);
-    %     Px(i,i+1) = X(3);
-    %Y
-    %     A = [1 1 1; wy(i-1) wy(i) wy(i+1); 0 wy(i) 0];
-    %     B = [1; wy(i); wy(i-1)*Py(i-1,i)];
-    %     X = linsolve(A, B);
-    %     Py(i,i-1) = X(1);
-    %     Py(i,i) = X(2);
-    %     Py(i,i+1) = X(3);
+    w(i) = (normcdf(i*cellSize,mu(1),sigma(1)) - normcdf((i-1)*cellSize,mu(1),sigma(1)));
+end
+w(nCells) = 1-sum(sum(w));
+
+
+%calculate the number of unknowns - half the size of the matrix with three
+%unknowns for each row except the first and last which have only two
+%unknowns each
+sz = ceil(nCells/2)*3-2;
+
+%set number of cells in half the distribution
+halfCells = ceil(nCells/2);
+
+%construct constraint equations
+%Fill top of Aeq matrix with probability constraints-each row must sum to 1
+%Initialize with a zero matrix
+AeqTop = zeros(halfCells, sz);
+%The first cell has only two possible moves (stay or right)
+AeqTop(1,1:2) = [1,1];
+%The interior cells have three possible moves (left, stay, or right)
+cnt = 3;
+for i = 2:halfCells-1
+    AeqTop(i,cnt:cnt+2) = [1,1,1];
+    cnt=cnt+3;
+end
+%The last cell has only two possible moves (left or stay) but symmetry
+%makes it twice as likely to leave as stay
+AeqTop(halfCells,cnt:cnt+1) = [2,1];
+%Fill top of Beq matrix with probability constraints
+%Each row must sum to 1
+BeqTop = ones(halfCells,1);
+
+%Fill bottom of Aeq matrix with wP = w constraints
+AeqBot = zeros(halfCells, sz);
+%The first row only has two entries
+AeqBot(1,1:3) = [w(1),0,w(2)];
+%Interior rows have three entries
+cnt = 2;
+for i = 2:halfCells-1
+    AeqBot(i,cnt:cnt+4) = [w(i-1),0,w(i),0,w(i+1)];
+    cnt = cnt+3;
+end
+%The last row only has two entries but one is doubled due to symmetry
+AeqBot(halfCells,cnt:sz) = [2*w(halfCells-1),0,w(halfCells)];
+
+%Fill bottom of Aeq matrix with wP = w constraints
+BeqBot = w(1:halfCells)';
+
+%Concatenate the Aeq and Beq matrices
+Aeq = [AeqTop;AeqBot];
+Beq = [BeqTop;BeqBot];
+
+%Set the minimization target for all entries
+f = ones(sz,1);
+
+%Set the bounds on the solutions to be proper probabilities
+%between 0 and 1
+lb = zeros(sz,1);
+ub = ones(sz,1);
+
+%Solve for the values that minimize the last variable
+x = linprog(f,[],[],Aeq,Beq,lb,ub);
+
+%Build the transition matrix from the solutions to the linear programming
+%problem
+%initialize the transition matrices with zeros
+P = zeros(nCells,nCells);
+%The first row has two entries
+P(1,1:2) = x(1:2);
+cnt = 3;
+%The interior rows have three entries
+for i=2:halfCells-1
+    P(i,i-1:i+1) = x(cnt:cnt+2);
+    cnt = cnt+3;
+end
+%The center row has the last two entries
+%The symmetry around the center reverses the order for the rest of the
+%distribution
+P(halfCells,halfCells-1:halfCells+1) = [x(sz-1) x(sz) x(sz-1)];
+cnt = sz-2;
+%The interior rows have three entries
+for i=halfCells+1:nCells-1
+    P(i,i-1:i+1) = flipud(x(cnt-2:cnt));
+    cnt = cnt-3;
+end
+%The last row has the last two entries
+P(nCells,nCells-1:nCells) = [x(2),x(1)];
+
+%Convert the transition matrix to a sparse matrix
+Ps = sparse(P);
+%Find the eigenvalues
+[V,~] = eigs(Ps');
+%The first column holds the stationary distribution
+st = V(:,1)';
+%Normalize the stationary distribution to be proper probabilities [0,1]
+st = st./sum(st);
+
+
+%build the 2-D transition matrix from the 1-D transition matrix
+%initialize the matrix with zeros
+P2D = zeros(nCells*nCells,nCells*nCells);
+
+%handle corner cells
+%top left
+i = 1;
+j = 1;
+idx2D = sub2ind([L L], i, j);
+%same row
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+%row below
+P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
+
+%top right
+i = 1;
+j = L;
+idx2D = sub2ind([L L], i, j);
+%same row
+P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+%row below
+P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+
+%bottom left
+i = L;
+j = 1;
+idx2D = sub2ind([L L], i, j);
+%row above
+P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
+%same row
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+
+%bottom right
+i = L;
+j = L;
+idx2D = sub2ind([L L], i, j);
+%row above
+P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+%same row
+P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+
+%handle edge cells
+%left edge
+j = 1;
+for i = 2:L-1
+    idx2D = sub2ind([L L], i, j);
+    %row above
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+    P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
+    %same row
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+    %row below
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+    P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
 end
 
-%calculate the number in each cell (2D)
-ptot = zeros(nCells, nCells);
-for i = 1:nCells
-    for j = 1:nCells
-        ptot(i,j) = nM*p(i,1)*p(j,2);
+%right edge
+j = L;
+for i = 2:L-1
+    idx2D = sub2ind([L L], i, j);
+    %row above
+    P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+    %same row
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    %row below
+    P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+end
+
+%top edge
+i = 1;
+for j = 2:L-1
+    idx2D = sub2ind([L L], i, j);
+    %same row
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+    %row below
+    P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+    P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+    P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
+end
+
+%bottom edge
+i = L;
+for j = 2:L-1
+    idx2D = sub2ind([L L], i, j);
+    %row above
+    P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+    P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+    P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
+    %same row
+    P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+    P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+    P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+end
+
+%handle interior cells
+for i = 2:L-1
+    for j = 2:L-1
+        idx2D = sub2ind([L L], i, j);
+        %row above
+        P2D(idx2D, idx2D-1-L) = P(i,i-1)*P(j,j-1);
+        P2D(idx2D, idx2D-1) = P(i,i-1)*P(j,j);
+        P2D(idx2D, idx2D-1+L) = P(i,i-1)*P(j,j+1);
+        %same row
+        P2D(idx2D, idx2D-L) = P(i,i)*P(j,j-1);
+        P2D(idx2D, idx2D) = P(i,i)*P(j,j);
+        P2D(idx2D, idx2D+L) = P(i,i)*P(j,j+1);
+        %row below
+        P2D(idx2D, idx2D+1-L) = P(i,i+1)*P(j,j-1);
+        P2D(idx2D, idx2D+1) = P(i,i+1)*P(j,j);
+        P2D(idx2D, idx2D+1+L) = P(i,i+1)*P(j,j+1);
     end
 end
 
-%adjust w to be a vector
-w = reshape(ptot,1,numel(ptot));
+Ps2D = sparse(P2D);
 
+%calculate the stationary distribution of the population
+%get the eigenvalues
+[V,~] = eigs(Ps2D');
+%the first column of the matrix is the stationary distribution
+w2D = V(:,1).';
+%normalize the stationary distribution to value probabilities [0,1]
+w2D = w2D./sum(w2D);
+%reshape the final distribution from a row vector to an LxL map
+w2D = reshape(w2D,L,L);
+%save the data
+if false %SAVE_INFO
+    save('NormalStationaryDist.mat','Ps2D','w2D');
+end

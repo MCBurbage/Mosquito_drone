@@ -12,8 +12,8 @@ if mod(L,2) == 0
 end
 
 %build the 1-D transition matrices
-[Ps1Dx,~] = Find1DNormalTransitions(L,mu(1),sigma);
-[Ps1Dy,~] = Find1DNormalTransitions(L,mu(2),sigma);
+[Ps1Dx,~] = Find1DNormalTransitions(L,mu(1),sigma(1));
+[Ps1Dy,~] = Find1DNormalTransitions(L,mu(2),sigma(2));
 
 %build the 2-D transition matrix from the 1-D transition matrix
 %initialize the matrix with zeros

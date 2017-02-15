@@ -1,5 +1,5 @@
 function PoseM = MosquitoKiller(PoseM,L,width)
-% Elimintes a swath of mosquitoes width wide across an area LxL meters.
+% Eliminates a swath of mosquitoes width wide across an area LxL meters.
 % The swath will either be in the x or y direction and will cross the whole
 % field.
 %

@@ -9,7 +9,7 @@ function [path] = BuildSquarrelPath(Xstart,Ystart,h,L)
 
 %%%Initialization
 s = 0; %length of a side of the path
-loopCount=L/(2*h); %max loops in spiral is size of workspace/distance between parallel paths
+loopCount=L/(2*h) + 1; %max loops in spiral is size of workspace/distance between parallel paths
                     
 %set first location in spiral
 path(1,1) = Xstart;

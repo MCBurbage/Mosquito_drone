@@ -15,13 +15,13 @@ function killTotal = StickyWallsSim(L,nIters,velocityR,s,k,killRate,MODE,sw)
 
 if nargin<1
     L = 100; %size of workspace (m)
-    nIters = 300; %number of loop iterations
+    nIters = 1000; %number of loop iterations
     velocityR = 12; %robot velocity
     s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
     k = 0.25; %mosquito probability of changing cells
     killRate = 0.9; %percentage of population killed when robot visits cell
     MODE = 4; %path planning mode
-    sw = 1; %width of boustrophedon row spacing
+    sw = 10; %width of boustrophedon row spacing
 end
 
 [Ps,w] = FindStickyWallTransitions(L,k,s);
@@ -57,11 +57,14 @@ elseif MODE == 3
     pathR = [pathR; [pathR(1,1) pathR(n,2) -pi]];
 elseif MODE == 4
     %build squarrel path from center out
-    pathR = BuildSquarrelPath(L/2,L/2,sw,L);
+    start = L/2;
+    if mod(start,1) == 0
+        %offset center to avoid running full path on gridlines
+        start = start + 0.5;
+    end
+    pathR = BuildSquarrelPath(start,start,sw,L);
     %reverse squarrel path to be from edge in
     pathR = flipud(pathR);
-    %adjust directions for reversed path
-    pathR(:,3) = pathR(:,3) - pi/2;
 else
     disp('No valid mode selected')
     return;
@@ -80,11 +83,11 @@ if showPlots
     %create robot path figure
     figure(1); clf; set(gcf,'color','w');
     %draw robot
-    hRob = scatter(PoseR(:,1),PoseR(:,2),100,'b','filled');
+    hRob = scatter(PoseR(1),PoseR(2),100,'b','filled');
     hold on
-    hRobScreenArea = patch(PoseR(1,1),PoseR(1,2),'b');
+    hRobScreenArea = patch(PoseR(1),PoseR(2),'b');
     set(hRobScreenArea,'facealpha',0.5)
-    hRobPath = plot(PoseR(1,1),PoseR(1,2),'-b');
+    hRobPath = plot(PoseR(1),PoseR(2),'-b');
     axis equal  %make axis lengths equal
     xlabel('x (m)')
     ylabel('y (m)')
@@ -126,7 +129,7 @@ for i = 1:nIters
     for z=2:u
         oldPoseR = PoseR;
         PoseR = cur_region(z,:);
-        coverage = UpdateTimeMap(oldPoseR(1,1:2),PoseR(1,1:2),coverage,1);
+        coverage = UpdateTimeMap(oldPoseR(1:2),PoseR(1:2),coverage,1);
     end
     %calculate kill and update distribution
     kill = killRate*coverage;
@@ -155,6 +158,6 @@ for i = 1:nIters
         zlim(zl)
         title({'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]})
         
-        pause(0.2)
+        pause(0.05)
     end
 end

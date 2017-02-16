@@ -11,6 +11,7 @@ function [region] = FindRegionNonOrthogonal(path,itr_R,PoseR,movement,repeat)
 %set starting position
 X = PoseR(1);
 Y = PoseR(2);
+a = PoseR(3);
 
 %get number of segments in path
 [end_P,~] = size(path);
@@ -19,7 +20,7 @@ cnt_P=2;
 
 for k=1:itr_R
     %set the beginning pose for the kth movement segment
-    region(1,:,k) = [X,Y,PoseR(3)];
+    region(1,:,k) = [X,Y,a];
     %reset running total moved for the current movement segment
     temp=0;
     %reset sub-segment counter
@@ -59,8 +60,8 @@ for k=1:itr_R
             %exit while loop for the current region segment
             break;
         end
+        ii = ii + 1;
     end
-    ii = ii + 1;
 end
 end
 

@@ -18,7 +18,7 @@ if dist(pathStart,pathEnd) == 0
 end
 
 %define a small amount for avoiding errors at the boundaries
-eps = 0.01;
+eps = 0.001;
 [n,m] = size(timeMap);
 %shift any values on the high boundaries inside the boundaries
 pathStart(pathStart(:,1)==n,1) = n-eps;
@@ -29,14 +29,14 @@ pathEnd(pathEnd(:,2)==m,2) = m-eps;
 
 %select the leftmost point on the path as the start of the path
 %this eliminates checking whether the path leaves the cell to the left
-if pathStart(1) > pathEnd(1)
+if pathStart(1) > pathEnd(1) + eps
     [pathStart, pathEnd] = swap(pathStart,pathEnd);
 end
 %if the path is a vertical path, select the lower point as the start of the
 %path
-if pathStart(1) == pathEnd(1)
+if abs(pathStart(1) - pathEnd(1)) < eps
     %switch path ends if the start is above the end
-    if pathStart(2) > pathEnd(2)
+    if pathStart(2) - pathEnd(2) > eps
         [pathStart, pathEnd] = swap(pathStart,pathEnd);
     end
 end
@@ -54,7 +54,7 @@ if ceil(pathStart(2)) == floor(pathStart(2))
 end
 
 %handle a vertical path (avoid infinite slope errors)
-if pathStart(1) == pathEnd(1)
+if abs(pathStart(1)-pathEnd(1))<eps
     x = pathStart(1);
     %find distance from start to first grid mark or end of path
     y = min(ceil(thisStart(2)),pathEnd(2));
@@ -116,7 +116,10 @@ while cell(1) < pathEnd(1) || cell(2) < pathEnd(2)
     y = (x-thisStart(1))*slope + thisStart(2);
     
     %check that this is actually where the path leaves the cell
-    if y > cell(2)    %the path passes through the top of the cell
+    if abs(slope) < eps   %horizontal line must pass into the cell on the right
+        %the next cell to evaluate is to the right of the current cell
+        nextCell = [cell(1)+1,cell(2)];
+    elseif y > cell(2)    %the path passes through the top of the cell
         %set y to the top of the cell
         y = cell(2);
         %calculate x based on y
@@ -155,7 +158,7 @@ while cell(1) < pathEnd(1) || cell(2) < pathEnd(2)
     %add the new time to the existing map
     timeMap(cell(1),cell(2)) = timeMap(cell(1),cell(2))+thisTime;
     %return if the end of the path had been reached
-    if thisEnd == pathEnd
+    if abs(thisEnd - pathEnd) < eps
         return;
     end
     

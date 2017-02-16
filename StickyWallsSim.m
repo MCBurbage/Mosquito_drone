@@ -39,7 +39,7 @@ timeStep = 1; %time lapse for each loop iteration (s)
 PoseR = [0.5 0.5 0];
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %calculate the path
 if MODE == 1
@@ -73,7 +73,7 @@ end
 %set amount robot moves in one time step
 movement = velocityR*timeStep;
 %Find path segments for each time step
-region = FindRegionNonOrthogonal(pathR,nIters,PoseR,movement,true);
+region = FindRegion(pathR,nIters,PoseR,movement,true);
 %set the region counter for the first region
 cnt_reg = 1;
 %set initial mosquito distribution

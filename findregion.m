@@ -2,9 +2,6 @@ function [region] = findregion(path,itr_R,PoseR,movement,repeat)
 %Divides a path given by an array of way-points into itr_R segments of
 %length movement, beginning at PoseR.
 %
-%Note that this function only works with paths aligned with the x and y
-%axes..
-%
 % Authors: Mary Burbage (mcfieler@uh.edu), Sheryl Monzoor
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -12,9 +9,9 @@ function [region] = findregion(path,itr_R,PoseR,movement,repeat)
 %length of movement
 
 %set starting position
-Xlast = PoseR(1,1);
-Ylast = PoseR(1,2);
-thetalast = PoseR(1,3);
+X = PoseR(1);
+Y = PoseR(2);
+a = PoseR(3);
 
 %get number of segments in path
 [end_P,~] = size(path);
@@ -23,94 +20,61 @@ cnt_P=2;
 
 for k=1:itr_R
     %set the beginning pose for the kth movement segment
-    region(1,:,k) = [Xlast,Ylast,thetalast];
+    region(1,:,k) = [X,Y,a];
     %reset running total moved for the current movement segment
     temp=0;
-    %reset sub-segment counter 
-    ii=2; 
+    %reset sub-segment counter
+    ii=2;
     
+    %if the path is to be repeated and the last segment has
+    %been reached, reset the path segment counter
+    if repeat && cnt_P > end_P
+        cnt_P = 1;
+    end
     %loop until the total distance in region(:,:,k) >= movement
     while temp < movement && cnt_P <= end_P
-        %check if robot is moving vertically
-        %compare current X-coordinate to the next X-coordinate
-        if path(cnt_P,1) == Xlast
-            temp = temp + abs(path(cnt_P,2) - Ylast);
-            %if the next node is still within the current region
-            if temp < movement
-                %move to the next node
-                Xlast = path(cnt_P,1);
-                Ylast = path(cnt_P,2);
-                thetalast = path(cnt_P,3);
-                
-                region(ii,:,k) =  path(cnt_P,:);
-                cnt_P = cnt_P +1;
-            else
-                %set position for the end of the region
-                thetalast = path(cnt_P,3);
-                Xlast = path(cnt_P,1);
-                %if the distance between current and next path node
-                %is greater than movement step size then move the robot by 
-                %'movement' amount and subtract excess in y-direction
-                Ylast = path(cnt_P,2) - sin(thetalast)*(temp - movement);
-                region(ii,:,k) = [Xlast,Ylast,thetalast];
-                %if the move ends at the end of a path segment,
-                %increment the path segment counter
-                if temp == movement
-                    cnt_P = cnt_P +1;
-                end
-                %if the path is to be repeated and the last segment has
-                %been reached, reset the path segment counter
-                if repeat && cnt_P > end_P
-                    cnt_P = 1;
-                end
-                break;
-            end
-            
-            %check if robot is moving horizontally
-        elseif path(cnt_P,2) == Ylast
-            %add distance to next node to running total
-            temp = temp + abs(path(cnt_P,1) - Xlast);
-            %if the next node is still within the current region
-            if temp < movement
-                %move to the next node
-                Xlast = path(cnt_P,1);
-                Ylast = path(cnt_P,2);
-                thetalast = path(cnt_P,3);
-                region(ii,:,k) = path(cnt_P,:);
-                cnt_P = cnt_P +1;
-            else
-                %set position for the end of the region
-                thetalast = path(cnt_P,3);
-                %if the distance between current and next path node
-                %is greater than movement then move the robot by 'movement'
-                %amount and subtract excess in x-direction
-                Xlast = path(cnt_P,1) - cos(thetalast)*(temp - movement);
-                Ylast = path(cnt_P,2);
-                region(ii,:,k) = [Xlast,Ylast,thetalast];
-                
-                %if the move ends at the end of a path segment, increment
-                %the path segment counter
-                if temp == movement
-                    cnt_P = cnt_P +1;
-                end
-                %if the path is to be repeated and the last segment has
-                %been reached, reset the path segment counter
-                if repeat && cnt_P > end_P
-                    cnt_P = 1;
-                end
-                break;
-            end
+        %get magnitude and angle of path step
+        [d,a] = dist(path(cnt_P,1:2),[X Y]);
+        %if the next node is still within the current region
+        if temp+d < movement
+            temp = temp + d;
+            %move to the next node
+            X = path(cnt_P,1);
+            Y = path(cnt_P,2);
+            %add the path segment
+            region(ii,:,k) =  path(cnt_P,:);
+            cnt_P = cnt_P +1;
         else
-            %with a square path aligned with the x and y axes, the last
-            %position should always be equal to the next position in one
-            %coordinate or the other; if not, there is an error so return
-            return;
-        end
-        %if the path is to be repeated and the last segment has
-        %been reached, reset the path segment counter
-        if repeat && cnt_P > end_P
-            cnt_P = 1;
+            %set position for the end of the region
+            %if the distance between current and next path node
+            %is greater than movement step size then move the robot by
+            %remainder of movement amount
+            X = X + cos(a)*(movement - temp);
+            Y = Y + sin(a)*(movement - temp);
+            region(ii,:,k) = [X,Y,a];
+            %if the move ends at the end of a path segment,
+            %increment the path segment counter
+            if temp+d == movement
+                cnt_P = cnt_P +1;
+            end
+            %exit while loop for the current region segment
+            break;
         end
         ii = ii + 1;
     end
+end
+end
+
+
+function [d,a] = dist(p,q)
+%set the norm 2 distance
+d=sum((p-q).^2).^.5;
+%set the angle of the vector from p to q
+a=atan2(p(2)-q(2),p(1)-q(1));
+%normalize the angle to [-pi,pi]
+if a>pi
+    a = a-2*pi;
+elseif a<-pi
+    a = a+2*pi;
+end
 end

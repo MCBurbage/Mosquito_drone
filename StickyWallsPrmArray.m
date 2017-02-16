@@ -15,7 +15,7 @@ killRate = [0.5 0.7 0.9];
 %boustrophedon spacing
 rowSpacing = [L/50 L/20 L/10 L/5];
 %path mode
-mode = [1 2 3];
+mode = [1 2 3 4 5 6];
 
 %get the number of tests to be performed
 testCnt = numel(testTime)*numel(velocityR)*numel(stick)*numel(transitionPct)*numel(killRate)*numel(mode)*numel(rowSpacing);
@@ -31,7 +31,7 @@ for i = 1:numel(testTime)
                 for m = 1:numel(killRate)
                     for n = 1:numel(mode)
                         for o = 1:numel(rowSpacing)
-                            if (n==1 || n==4 || n==5) && o>1
+                            if (mode(n)==1 || mode(n)==5 || mode(n)==6) && o>1
                                 %row spacing does not matter for
                                 %wall-following and greedy modes so skip 
                                 %all but the first test
@@ -42,7 +42,7 @@ for i = 1:numel(testTime)
                             disp(['i=',num2str(i),', j=',num2str(j),', k=',num2str(k),', l=',num2str(l),', m=',num2str(m),', n=',num2str(n),', o=',num2str(o)])
                             %run simulation
                             switch n
-                                case {1, 2, 3}
+                                case {1, 2, 3, 4}
                                     %set test result parametric information
                                     testResults(cnt,1) = testTime(i);
                                     testResults(cnt,2) = velocityR(j);
@@ -54,7 +54,7 @@ for i = 1:numel(testTime)
                                     testResults(cnt,8) = StickyWallsSim(L,testTime(i),velocityR(j),stick(k),transitionPct(l),killRate(m),mode(n),rowSpacing(o));
                                     %increment the test counter
                                     cnt = cnt+1;
-                                case 4
+                                case 5
                                     for p=1:20
                                         %set test result parametric information
                                         testResults(cnt,1) = testTime(i);
@@ -67,7 +67,7 @@ for i = 1:numel(testTime)
                                         %increment the test counter
                                         cnt = cnt+1;
                                     end
-                                case 5
+                                case 6
                                     for p=1:20
                                         %set test result parametric information
                                         testResults(cnt,1) = testTime(i);

@@ -3,7 +3,7 @@ function [Ps, w] = Find1DNormalTransitions(L,mu,sigma)
 if nargin<3
     L = 99; %size of workspace
     mu = L/2; % average
-    sigma = L/10; %standard deviation of distribution
+    sigma = L/5; %standard deviation of distribution
 end
 
 %NOTE:  This only works for an odd number of cells.
@@ -15,11 +15,11 @@ end
 w = zeros(1,L); %initialize the distribution
 
 %calculate percentage of population in each cell
-w(1) = normcdf(1,mu(1),sigma(1));
-for i = 2:L-1
-    w(i) = (normcdf(i,mu(1),sigma(1)) - normcdf((i-1),mu(1),sigma(1)));
+w(1) = normcdf(1,mu,sigma) - normcdf(0,mu,sigma);
+for i = 2:L
+    w(i) = (normcdf(i,mu,sigma) - normcdf((i-1),mu,sigma));
 end
-w(L) = 1-sum(sum(w));
+w = w./sum(sum(w));
 
 %calculate the number of unknowns - half the size of the matrix with three
 %unknowns for each row except the first and last which have only two

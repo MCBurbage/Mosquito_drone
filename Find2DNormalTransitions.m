@@ -3,7 +3,7 @@ function [Ps2D, w2D] = Find2DNormalTransitions(L,mu,sigma)
 if nargin<3
     L = 99; %size of workspace
     mu = [L/2 L/2]; % average
-    sigma = [L/10 L/10]; %standard deviation of distribution
+    sigma = [L/8 L/8]; %standard deviation of distribution
 end
 
 %NOTE:  This only works for an odd number of cells.

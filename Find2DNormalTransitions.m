@@ -6,6 +6,12 @@ if nargin<3
     sigma = [L/8 L/8]; %standard deviation of distribution
 end
 
+if numel(mu) == 1
+    mu = [mu mu];
+end
+if numel(sigma) == 1
+    sigma = [sigma sigma];
+end
 %NOTE:  This only works for an odd number of cells.
 if mod(L,2) == 0
     L = L+1;

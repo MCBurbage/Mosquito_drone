@@ -52,12 +52,12 @@ stepDir = 1;
 curStep = 1;
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %set amount robot moves in one time step
 movement = velocityR*timeStep;
 %Find path segments for each time step
-region = findregion(pathR,nIters,PoseR,movement,false);
+region = FindRegion(pathR,nIters,PoseR,movement,false);
 [~,~,numSteps] = size(region);
 %set the region counter for the first region
 cnt_reg = 1;

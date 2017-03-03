@@ -45,7 +45,7 @@ nIters = velocityR*runTime/timeStep;
 PoseR = [1 1];
 
 %set whether to display progress plots
-showPlots = false;
+showPlots = true;
 
 %set initial mosquito distribution
 distrib = nM * w;
@@ -60,17 +60,20 @@ if showPlots
     set(hRobScreenArea,'facealpha',0.5)
     hRobPath = plot(PoseR(1),PoseR(2),'-b');
     axis equal  %make axis lengths equal
-    xlabel('x (m)')
-    ylabel('y (m)')
     axis(L*[0,1,0,1])
+    ax1 = gca;
+    ax1.XLabel.String = 'x (m)';
+    ax1.YLabel.String = 'y (m)';
+    ax1.Title.String = {['Iteration 0 of ', num2str(nIters)];'0 mosquitoes killed'};
     
     %display distribution map
     figure(2); clf; set(gcf,'color','w');
-    surf(distrib)
-    xlabel('x (m)')
-    ylabel('y (m)')
-    zlabel('Number of Mosquitoes')
-    title({'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]})
+    hDist = surf(distrib);
+    ax2 = gca;
+    ax2.XLabel.String = 'x (m)';
+    ax2.YLabel.String = 'y (m)';
+    ax2.ZLabel.String = 'Number of Mosquitoes';
+    ax2.Title.String = {'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]};
     zl = zlim; zl(1) = 0;
 end
 
@@ -198,21 +201,16 @@ for i = 1:nIters
     %update figures
     if showPlots
         %add current region coordinates to the robot path trace
-        figure(1)
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(1)],'Ydata', [yd,PoseR(2)]);
         set(hRob,'Xdata',PoseR(1),'Ydata',PoseR(2));
-        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']})
+        ax1.Title.String = {['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']};
         
         %update the distribution map
-        figure(2); set(gcf,'color','w');
-        surf(distrib)
-        xlabel('x (m)')
-        ylabel('y (m)')
-        zlabel('Number of Mosquitoes')
-        zlim(zl)
-        title({'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]})
-        
+        set(hDist,'Zdata',distrib)
+        ax2.ZLim = zl;
+        ax2.Title.String = {'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
+            
         pause(0.02)
     end
 end

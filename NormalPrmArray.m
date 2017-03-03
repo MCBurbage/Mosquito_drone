@@ -1,4 +1,4 @@
-%tests to run with sticky wall simulation for comparison
+%tests to run with normal distribution simulation for comparison
 
 %size of workspace
 L = 99;

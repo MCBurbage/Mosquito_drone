@@ -15,13 +15,13 @@ function killTotal = StickyWallsSim(L,nIters,velocityR,s,k,killRate,MODE,sw)
 
 if nargin<1
     L = 100; %size of workspace (m)
-    nIters = 1000; %number of loop iterations
+    nIters = 300; %number of loop iterations
     velocityR = 12; %robot velocity
-    s = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-    k = 0.25; %mosquito probability of changing cells
-    killRate = 0.9; %percentage of population killed when robot visits cell
-    MODE = 4; %path planning mode
-    sw = 10; %width of boustrophedon row spacing
+    s = 0.75; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.15; %mosquito probability of changing cells
+    killRate = 1.0; %percentage of population killed when robot visits cell
+    MODE = 2; %path planning mode
+    sw = 1; %width of boustrophedon row spacing
 end
 
 [Ps,w] = FindStickyWallTransitions(L,k,s);
@@ -39,7 +39,7 @@ timeStep = 1; %time lapse for each loop iteration (s)
 PoseR = [0.5 0.5 0];
 
 %set whether to display progress plots
-showPlots = false;
+showPlots = true;
 
 %calculate the path
 if MODE == 1
@@ -89,17 +89,20 @@ if showPlots
     set(hRobScreenArea,'facealpha',0.5)
     hRobPath = plot(PoseR(1),PoseR(2),'-b');
     axis equal  %make axis lengths equal
-    xlabel('x (m)')
-    ylabel('y (m)')
     axis(L*[0,1,0,1])
+    ax1 = gca;
+    ax1.XLabel.String = 'x (m)';
+    ax1.YLabel.String = 'y (m)';
+    ax1.Title.String = {['Iteration 0 of ', num2str(nIters)];'0 mosquitoes killed'};
     
     %display distribution map
     figure(2); clf; set(gcf,'color','w');
-    surf(distrib)
-    xlabel('x (m)')
-    ylabel('y (m)')
-    zlabel('Number of Mosquitoes')
-    title({'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]})
+    hDist = surf(distrib);
+    ax2 = gca;
+    ax2.XLabel.String = 'x (m)';
+    ax2.YLabel.String = 'y (m)';
+    ax2.ZLabel.String = 'Number of Mosquitoes';
+    ax2.Title.String = {'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]};
     zl = zlim; zl(1) = 0;
 end
 
@@ -143,20 +146,15 @@ for i = 1:nIters
     %update figures
     if showPlots
         %add current region coordinates to the robot path trace
-        figure(1)
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,cur_region(:,1)'],'Ydata', [yd,cur_region(:,2)']);
         set(hRob,'Xdata',PoseR(:,1),'Ydata',PoseR(:,2));
-        title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']})
+        ax1.Title.String = {['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']};
         
         %update the distribution map
-        figure(2); set(gcf,'color','w');
-        surf(distrib)
-        xlabel('x (m)')
-        ylabel('y (m)')
-        zlabel('Number of Mosquitoes')
-        zlim(zl)
-        title({'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]})
+        set(hDist,'Zdata',distrib)
+        ax2.ZLim = zl;
+        ax2.Title.String = {'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
         
         pause(0.05)
     end

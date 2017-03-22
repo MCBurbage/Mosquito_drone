@@ -11,7 +11,7 @@ function [Ps, w] = FindStickyWallTransitions(L,k,s)
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-SAVE_INFO = true;
+SAVE_INFO = false;
 
 %set the fraction of the mosquitoes that move to other cells
 sk = k*0.23;    %to a cell up/down/left/right

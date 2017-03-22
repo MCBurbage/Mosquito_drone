@@ -1,9 +1,10 @@
-function [Ps, w] = Find1DNormalTransitions(L,mu,sigma)
+function [Ps, w] = Find1DNormalTransitions(L,mu,sigma,k)
 
 if nargin<3
     L = 99; %size of workspace
     mu = L/2; % average
     sigma = L/5; %standard deviation of distribution
+    k = 0.5; %diffusion rate from center cell
 end
 
 %NOTE:  This only works for an odd number of cells.
@@ -61,12 +62,17 @@ end
 %The last row only has two entries but one is doubled due to symmetry
 AeqBot(halfCells,cnt:sz) = [2*w(halfCells-1),0,w(halfCells)];
 
-%Fill bottom of Aeq matrix with wP = w constraints
+%Fill bottom of Beq matrix with wP = w constraints
 BeqBot = w(1:halfCells)';
 
+%Add final constraint that defines the diffusion rate for the center of the
+%distribution
+AeqLast = [zeros(1,sz-2),1,0];
+BeqLast = k/2;
+
 %Concatenate the Aeq and Beq matrices
-Aeq = [AeqTop;AeqBot];
-Beq = [BeqTop;BeqBot];
+Aeq = [AeqTop;AeqBot;AeqLast];
+Beq = [BeqTop;BeqBot;BeqLast];
 
 %Set the minimization target for all entries
 f = ones(sz,1);
@@ -113,3 +119,4 @@ st = V(:,1)';
 %Normalize the stationary distribution to be proper probabilities [0,1]
 st = st./sum(st);
 
+a=1;

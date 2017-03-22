@@ -1,4 +1,4 @@
-function killTotal = GreedySim(distType,L,runTime,velocityR,prm1,prm2,killRate)
+function killTotal = GreedySim(distType,L,runTime,velocityR,k,prm1,killRate)
 % Simulates a group of mosquitoes following a Markov process and a robot
 % using a 1-step greedy algorithm to hunt them
 % distType = type of distribution ('StickyWalls' or 'Normal')
@@ -6,13 +6,12 @@ function killTotal = GreedySim(distType,L,runTime,velocityR,prm1,prm2,killRate)
 % runTime = time to run simulation (s)
 % velocityR = robot velocity (m/s)
 % killRate = percentage of population killed when robot visits cell
+% k = mosquito probability of changing cells
 % distribution parameters
 % sticky walls:
-% prm1 = mosquito probability of changing cells
-% prm2 = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+% prm1 = wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 % normal:
 % prm1 = standard deviation of distribution
-% prm2 = unused
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -24,15 +23,15 @@ if nargin<1
     runTime = 100; %time to run simulation (s)
     velocityR = 12; %robot velocity (m/s)
     killRate = 0.9; %percentage of population killed when robot visits cell
-    prm1 = 0.25; %mosquito probability of changing cells
-    prm2 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.25; %percentage of population leaving (center) cell
+    prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
 if strcmp(distType,'StickyWalls')
-    [Ps,w] = FindStickyWallTransitions(L,prm1,prm2);
+    [Ps,w] = FindStickyWallTransitions(L,k,prm1);
 elseif strcmp(distType,'Normal')
     mu = [L/2 L/2]; %mean must be at the center to take advantage of symmetry
-    [Ps,w] = Find2DNormalTransitions(L,mu,prm1);
+    [Ps,w] = Find2DNormalTransitions(L,mu,prm1,k);
 end
 
 nM = 10000; %starting number of mosquitoes
@@ -41,11 +40,14 @@ timeStep = 1; %time lapse for each loop iteration (s)
 nIters = velocityR*runTime/timeStep;
 
 %initialize robot position
-%PoseR = [ceil(L/2) ceil(L/2)];
-PoseR = [1 1];
+if strcmp(distType,'StickyWalls')
+    PoseR = [1 1];
+else
+    PoseR = [ceil(L/2) ceil(L/2)];
+end
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %set initial mosquito distribution
 distrib = nM * w;

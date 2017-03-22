@@ -1,6 +1,6 @@
 function timeMap = UpdateTimeMap(pathStart,pathEnd,timeMap,vel)
-% Takes two 2D vectors (pathStart and pathEnd) and determines how long the 
-% path length is in discrete integer cells and adds that value to a 2D 
+% Takes two 2D vectors (pathStart and pathEnd) and determines how long the
+% path length is in discrete integer cells and adds that value to a 2D
 % matrix map (timeMap).  The path length is scaled by a velocity (vel).
 %
 % Authors: Mary Burbage (mcfieler@uh.edu)
@@ -12,8 +12,19 @@ if nargin<4
     return;
 end
 
-%return if the total path length is zero
+%total path length is zero
 if dist(pathStart,pathEnd) == 0
+    %set the cell
+    cell = ceil(pathStart);
+    %if the path starts on the edge of a cell, increment the cell number
+    if ceil(pathStart(1)) == floor(pathStart(1))
+        cell(1)=cell(1)+1;
+    end
+    if ceil(pathStart(2)) == floor(pathStart(2))
+        cell(2)=cell(2)+1;
+    end
+    %no movement so add 1 to the existing map
+    timeMap(cell(1),cell(2)) = timeMap(cell(1),cell(2))+1;
     return;
 end
 

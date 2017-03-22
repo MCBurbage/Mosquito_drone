@@ -1,4 +1,4 @@
-function killTotal = NormalSim(L,nIters,velocityR,sigma,killRate,MODE,sw,inThresh,outThresh)
+function killTotal = NormalSim(L,nIters,velocityR,sigma,k,killRate,MODE,sw,inThresh,outThresh)
 % Simulates a group of mosquitoes following a Markov process and a robot
 % using any of three pre-planned paths to hunt them
 % L = size of workspace (m)
@@ -25,11 +25,12 @@ function killTotal = NormalSim(L,nIters,velocityR,sigma,killRate,MODE,sw,inThres
 if nargin<1
     L = 99; %size of workspace (m)
     nIters = 300; %number of loop iterations
-    velocityR = 12; %robot velocity
+    velocityR = 6; %robot velocity
     sigma = [L/10 L/10]; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.25; %diffusion rate from center cell
     killRate = 0.9; %percentage of population killed when robot visits cell
     MODE = 1; %path planning mode
-    sw = 1; %width of robot
+    sw = L/5; %width of robot
     inThresh = 0.8; %threshold to turn in for MODE 3
     outThresh = 0.8; %threshold to turn out for MODE 3
 end
@@ -39,7 +40,7 @@ timeStep = 1; %time lapse for each loop iteration (s)
 mu = [L/2 L/2]; %center of mosquito distribution
 
 %calculate transition matrix and stationary distribution
-[Ps,w] = Find2DNormalTransitions(L,mu,sigma);
+[Ps,w] = Find2DNormalTransitions(L,mu,sigma,k);
 
 %initialize robot position
 PoseR = [L/2 L/2 0];
@@ -52,7 +53,7 @@ stepDir = 1;
 curStep = 1;
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %set amount robot moves in one time step
 movement = velocityR*timeStep;
@@ -125,6 +126,11 @@ for i = 1:nIters
         PoseR = cur_region(z,:);
         coverage = UpdateTimeMap(oldPoseR(1,1:2),PoseR(1,1:2),coverage,1);
     end
+    %calculate area covered for a stationary robot (1 in current cell)
+    if velocityR == 0
+        oldPoseR = PoseR;
+        coverage = UpdateTimeMap(oldPoseR(1:2),PoseR(1:2),coverage,1);
+    end
     %calculate kill and update distribution
     kill = killRate*coverage;
     %everything not killed has survived
@@ -150,7 +156,8 @@ for i = 1:nIters
         set(hDist,'Zdata',distrib)
         ax2.ZLim = zl;
         ax2.Title.String = {'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
-        
+        pause(0.05)
+    end
     %set the robot's distance from the center of the workspace
     r = dist(PoseR(1:2),mu);
     %count the living mosquitoes closer to the center than the robot
@@ -206,11 +213,10 @@ for i = 1:nIters
     end
     curStep = curStep + stepDir;
     
-        pause(0.2)
-    end
 end
 end
 
 function d = dist(a,b)% norm 2 distance between two vectors
-d=sum((a-b).^2).^.5;
+%d=sum((a-b).^2).^.5;
+d = max(abs(a-b))-1;
 end

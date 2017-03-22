@@ -19,8 +19,8 @@ if nargin<1
     velocityR = 12; %robot velocity
     s = 0.75; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
     k = 0.15; %mosquito probability of changing cells
-    killRate = 1.0; %percentage of population killed when robot visits cell
-    MODE = 2; %path planning mode
+    killRate = 0.9; %percentage of population killed when robot visits cell
+    MODE = 1; %path planning mode
     sw = 1; %width of boustrophedon row spacing
 end
 
@@ -39,7 +39,7 @@ timeStep = 1; %time lapse for each loop iteration (s)
 PoseR = [0.5 0.5 0];
 
 %set whether to display progress plots
-showPlots = true;
+showPlots = false;
 
 %calculate the path
 if MODE == 1
@@ -132,6 +132,11 @@ for i = 1:nIters
     for z=2:u
         oldPoseR = PoseR;
         PoseR = cur_region(z,:);
+        coverage = UpdateTimeMap(oldPoseR(1:2),PoseR(1:2),coverage,1);
+    end
+    %calculate area covered for a stationary robot (1 in current cell)
+    if velocityR == 0
+        oldPoseR = PoseR;
         coverage = UpdateTimeMap(oldPoseR(1:2),PoseR(1:2),coverage,1);
     end
     %calculate kill and update distribution

@@ -1,4 +1,4 @@
-function [region] = findregion(path,itr_R,PoseR,movement,repeat)
+function [region] = FindRegion(path,itr_R,PoseR,movement,repeat)
 %Divides a path given by an array of way-points into itr_R segments of
 %length movement, beginning at PoseR.
 %
@@ -30,6 +30,8 @@ for k=1:itr_R
     %been reached, reset the path segment counter
     if repeat && cnt_P > end_P
         cnt_P = 1;
+    elseif ~repeat && cnt_P > end_P
+        return;
     end
     %loop until the total distance in region(:,:,k) >= movement
     while temp < movement && cnt_P <= end_P

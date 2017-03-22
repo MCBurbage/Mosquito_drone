@@ -1,9 +1,10 @@
-function [Ps2D, w2D] = Find2DNormalTransitions(L,mu,sigma)
+function [Ps2D, w2D] = Find2DNormalTransitions(L,mu,sigma,k)
 
 if nargin<3
     L = 99; %size of workspace
     mu = [L/2 L/2]; % average
     sigma = [L/8 L/8]; %standard deviation of distribution
+    k = 0.5; %diffusion rate from center cell
 end
 
 if numel(mu) == 1
@@ -18,8 +19,8 @@ if mod(L,2) == 0
 end
 
 %build the 1-D transition matrices
-[Ps1Dx,~] = Find1DNormalTransitions(L,mu(1),sigma(1));
-[Ps1Dy,~] = Find1DNormalTransitions(L,mu(2),sigma(2));
+[Ps1Dx,~] = Find1DNormalTransitions(L,mu(1),sigma(1),k);
+[Ps1Dy,~] = Find1DNormalTransitions(L,mu(2),sigma(2),k);
 
 %build the 2-D transition matrix from the 1-D transition matrix
 %initialize the matrix with zeros

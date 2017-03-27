@@ -26,11 +26,11 @@ if nargin<1
     L = 99; %size of workspace (m)
     nIters = 300; %number of loop iterations
     velocityR = 6; %robot velocity
-    sigma = [L/10 L/10]; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
-    k = 0.25; %diffusion rate from center cell
+    sigma = [L/20 L/20]; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    k = 0.2; %diffusion rate from center cell
     killRate = 0.9; %percentage of population killed when robot visits cell
-    MODE = 1; %path planning mode
-    sw = L/5; %width of robot
+    MODE = 3; %path planning mode
+    sw = L/50; %width of robot
     inThresh = 0.8; %threshold to turn in for MODE 3
     outThresh = 0.8; %threshold to turn out for MODE 3
 end

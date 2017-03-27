@@ -21,18 +21,19 @@ function killTotal = Greedy2Sim(distType,L,runTime,velocityR,k,prm1,killRate)
 if nargin<1
     distType = 'StickyWalls';
     L = 100; %size of workspace (m)
-    runTime = 100; %time to run simulation (s)
+    runTime = 300; %time to run simulation (s)
     velocityR = 12; %robot velocity (m/s)
     killRate = 0.9; %percentage of population killed when robot visits cell
     k = 0.25; %mosquito probability of changing cells
     prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
+kstep = k/velocityR;
 if strcmp(distType,'StickyWalls')
-    [Ps,w] = FindStickyWallTransitions(L,k,prm1);
+    [Ps,w] = FindStickyWallTransitions(L,kstep,prm1);
 elseif strcmp(distType,'Normal')
     mu = [L/2 L/2]; %mean must be at the center to take advantage of symmetry
-    [Ps,w] = Find2DNormalTransitions(L,mu,prm1,k);
+    [Ps,w] = Find2DNormalTransitions(L,mu,prm1,kstep);
 end
 
 nM = 10000; %starting number of mosquitoes
@@ -48,12 +49,12 @@ else
 end
 
 %set whether to display progress plots
-showPlots = false;
+SHOW_PLOTS = false;
 
 %set initial mosquito distribution
 distrib = nM * w;
 
-if showPlots
+if SHOW_PLOTS
     %create robot path figure
     figure(1); clf; set(gcf,'color','w');
     %draw robot
@@ -79,7 +80,6 @@ if showPlots
     ax2.Title.String = {'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]};
     zl = zlim; zl(1) = 0;
 end
-
 %initialize iteration counter for mosquito movement
 itrCnt = 0;
 
@@ -87,13 +87,7 @@ itrCnt = 0;
 for i = 1:nIters
     %simulate movement of mosquitoes once every second
     if itrCnt >= velocityR
-        %shape distribution as a vector
-        distrib = reshape(distrib, 1, numel(distrib));
-        %multiply by the transition matrix
-        distrib = distrib * Ps;
-        %shape distribution as a map
-        distrib = reshape(distrib, L, L);
-        %reset iteration counter
+        distrib = ApplyTransition(distrib, Ps, L, w);
         itrCnt = 0;
     end
     %compare mosquito populations in cells surrounding the robot
@@ -110,6 +104,7 @@ for i = 1:nIters
     %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        %tempDistrib = ApplyTransition(tempDistrib, Ps, L, w);
     end
     %calculate the reward for the second step options
     option2(:,1) = option1(1) + getOptionMatrix(tempDistrib,step1Pose,L);
@@ -121,6 +116,7 @@ for i = 1:nIters
     %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        %tempDistrib = ApplyTransition(tempDistrib, Ps, L, w);
     end
     %calculate the reward for the second step options
     option2(:,2) = option1(2) + getOptionMatrix(tempDistrib,step1Pose,L);
@@ -132,6 +128,7 @@ for i = 1:nIters
     %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        %tempDistrib = ApplyTransition(tempDistrib, Ps, L, w);
     end
     %calculate the reward for the second step options
     option2(:,3) = option1(3) + getOptionMatrix(tempDistrib,step1Pose,L);
@@ -143,6 +140,7 @@ for i = 1:nIters
     %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        %tempDistrib = ApplyTransition(tempDistrib, Ps, L, w);
     end
     %calculate the reward for the second step options
     option2(:,4) = option1(4) + getOptionMatrix(tempDistrib,step1Pose,L);
@@ -154,6 +152,7 @@ for i = 1:nIters
     %if the pose is within the workspace, kill mosquitoes in that cell
     if ~any(step1Pose<1) && ~any(step1Pose>L)
         tempDistrib(step1Pose(1),step1Pose(2)) = tempDistrib(step1Pose(1),step1Pose(2))*(1-killRate);
+        %tempDistrib = ApplyTransition(tempDistrib, Ps, L, w);
     end
     %calculate the reward for the second step options
     option2(:,5) = option1(5) + getOptionMatrix(tempDistrib,step1Pose,L);
@@ -202,7 +201,7 @@ for i = 1:nIters
     killTotal = nM - sum(sum(distrib));
     
     %update figures
-    if showPlots
+    if SHOW_PLOTS
         %add current region coordinates to the robot path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(1)],'Ydata', [yd,PoseR(2)]);
@@ -241,4 +240,20 @@ options = [distrib(r,c);
     distrib(r,c+1);
     distrib(r-1,c);
     distrib(r+1,c)];
+end
+
+function distrib = ApplyTransition(distrib, P, L, w)
+%motionless distribution
+%return;
+
+    %shape distribution as a vector
+    distrib = reshape(distrib, 1, numel(distrib));
+    %multiply by the transition matrix
+    distrib = distrib * P;
+    %shape distribution as a map
+    distrib = reshape(distrib, L, L);
+
+    %instantly reform stationary distribution
+%    totalLeft = sum(sum(distrib));
+%    distrib = totalLeft * w;
 end

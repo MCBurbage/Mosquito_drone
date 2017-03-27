@@ -27,11 +27,12 @@ if nargin<1
     prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
+kstep = k/velocityR;
 if strcmp(distType,'StickyWalls')
-    [Ps,w] = FindStickyWallTransitions(L,k,prm1);
+    [Ps,w] = FindStickyWallTransitions(L,kstep,prm1);
 elseif strcmp(distType,'Normal')
     mu = [L/2 L/2]; %mean must be at the center to take advantage of symmetry
-    [Ps,w] = Find2DNormalTransitions(L,mu,prm1,k);
+    [Ps,w] = Find2DNormalTransitions(L,mu,prm1,kstep);
 end
 
 nM = 10000; %starting number of mosquitoes

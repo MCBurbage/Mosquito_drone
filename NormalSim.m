@@ -26,7 +26,7 @@ if nargin<1
     L = 99; %size of workspace (m)
     nIters = 300; %number of loop iterations
     velocityR = 6; %robot velocity
-    sigma = [L/20 L/20]; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    sigma = [L/10 L/10]; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
     k = 0.2; %diffusion rate from center cell
     killRate = 0.9; %percentage of population killed when robot visits cell
     MODE = 3; %path planning mode
@@ -53,7 +53,7 @@ stepDir = 1;
 curStep = 1;
 
 %set whether to display progress plots
-showPlots = false;
+SHOW_PLOTS = true;
 
 %set amount robot moves in one time step
 movement = velocityR*timeStep;
@@ -65,15 +65,15 @@ cnt_reg = 1;
 %set initial mosquito distribution
 distrib = nM * w;
 
-if showPlots
+if SHOW_PLOTS
     %create robot path figure
     figure(1); clf; set(gcf,'color','w');
     %draw robot
-    hRob = scatter(PoseR(:,1),PoseR(:,2),100,'b','filled');
+    hRob = scatter(PoseR(2),PoseR(1),100,'b','filled');
     hold on
-    hRobScreenArea = patch(PoseR(1,1),PoseR(1,2),'b');
-    set(hRobScreenArea,'facealpha',0.5)
-    hRobPath = plot(PoseR(1,1),PoseR(1,2),'-b');
+    %hRobScreenArea = patch(PoseR(1,1),PoseR(1,2),'b');
+    %set(hRobScreenArea,'facealpha',0.5)
+    hRobPath = plot(PoseR(2),PoseR(1),'-b');
     axis equal  %make axis lengths equal
     axis(L*[0,1,0,1])
     ax1 = gca;
@@ -141,15 +141,15 @@ for i = 1:nIters
     killTotal = nM - sum(sum(distrib));
     
     %update figures
-    if showPlots
+    if SHOW_PLOTS
         %add current region coordinates to the robot path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         if headingOut
-            set(hRobPath,'Xdata', [xd,cur_region(:,1)'],'Ydata', [yd,cur_region(:,2)']);
+            set(hRobPath,'Xdata', [xd,cur_region(:,2)'],'Ydata', [yd,cur_region(:,1)']);
         else
-            set(hRobPath,'Xdata', [xd,flipud(cur_region(:,1))'],'Ydata', [yd,flipud(cur_region(:,2))']);
+            set(hRobPath,'Xdata', [xd,flipud(cur_region(:,2))'],'Ydata', [yd,flipud(cur_region(:,1))']);
         end
-        set(hRob,'Xdata',PoseR(:,1),'Ydata',PoseR(:,2));
+        set(hRob,'Xdata',PoseR(2),'Ydata',PoseR(1));
         ax1.Title.String = {['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']};
         
         %update the distribution map

@@ -10,11 +10,11 @@
 
 %set up data by value
 %kill rate
-filename = 'NormalKillRateResults.pdf';
-vals = [0.5 0.7 0.9];
-group1 = normalTestResults(normalTestResults(:,4)==vals(1),:);
-group2 = normalTestResults(normalTestResults(:,4)==vals(2),:);
-group3 = normalTestResults(normalTestResults(:,4)==vals(3),:);
+% filename = 'NormalKillRateResults.pdf';
+% vals = [0.5 0.7 0.9];
+% group1 = normalTestResults(normalTestResults(:,4)==vals(1),:);
+% group2 = normalTestResults(normalTestResults(:,4)==vals(2),:);
+% group3 = normalTestResults(normalTestResults(:,4)==vals(3),:);
 
 %k
 % filename = 'NormalKResults.pdf';
@@ -24,11 +24,11 @@ group3 = normalTestResults(normalTestResults(:,4)==vals(3),:);
 % group3 = normalTestResults(normalTestResults(:,7)==vals(3),:);
 
 %velocity
-% filename = 'NormalVelocityResults.pdf';
-% vals = [6 9 12];
-% group1 = normalTestResults(normalTestResults(:,2)==vals(1),:);
-% group2 = normalTestResults(normalTestResults(:,2)==vals(2),:);
-% group3 = normalTestResults(normalTestResults(:,2)==vals(3),:);
+filename = 'NormalVelocityResults.pdf';
+vals = [6 9 12];
+group1 = normalTestResults(normalTestResults(:,2)==vals(1),:);
+group2 = normalTestResults(normalTestResults(:,2)==vals(2),:);
+group3 = normalTestResults(normalTestResults(:,2)==vals(3),:);
 
 f=figure;
 % set positions for boxes
@@ -53,7 +53,7 @@ set(h2(7,:),'Visible','off')
 set(h3(7,:),'Visible','off')
 %build legend
 box_vars = findall(gca,'Tag','Box');
-hLegend = legend(box_vars([13,1,7]), {num2str(vals(1)),num2str(vals(2)),num2str(vals(3))},'Location','northwest');
+hLegend = legend(box_vars([13,1,7]), {[num2str(vals(1)) ' m/s'],[num2str(vals(2)) ' m/s'],[num2str(vals(3)) ' m/s']},'Location','northwest');
 
 hold off
 % Insert texts and labels

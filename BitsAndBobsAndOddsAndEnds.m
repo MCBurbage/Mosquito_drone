@@ -6,10 +6,11 @@ r = 0.4*rand(n,1);
 x = r.*cos(theta);
 y = r.*sin(theta);
 
-scatter(x,y,'.','k')
+scatter(x,y,0.5,'.','k')
 axis equal
-xlabel('X Position (m)')
-ylabel('Y Position (m)')
+xlabel('x (m)')
+ylabel('y (m)')
+ylim([-0.5 0.5])
 
 %plot normals with different sigma values
 L = 99; %size of workspace

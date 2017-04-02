@@ -21,8 +21,8 @@ function killTotal = Greedy2Sim(distType,L,runTime,velocityR,k,prm1,killRate)
 if nargin<1
     distType = 'StickyWalls';
     L = 100; %size of workspace (m)
-    runTime = 300; %time to run simulation (s)
-    velocityR = 12; %robot velocity (m/s)
+    runTime = 100; %time to run simulation (s)
+    velocityR = 6; %robot velocity (m/s)
     killRate = 0.9; %percentage of population killed when robot visits cell
     k = 0.25; %mosquito probability of changing cells
     prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
@@ -49,7 +49,7 @@ else
 end
 
 %set whether to display progress plots
-SHOW_PLOTS = false;
+SHOW_PLOTS = true;
 
 %set initial mosquito distribution
 distrib = nM * w;
@@ -58,11 +58,11 @@ if SHOW_PLOTS
     %create robot path figure
     figure(1); clf; set(gcf,'color','w');
     %draw robot
-    hRob = scatter(PoseR(1),PoseR(2),100,'b','filled');
+    hRob = scatter(PoseR(2),PoseR(1),100,'b','filled');
     hold on
-    hRobScreenArea = patch(PoseR(1),PoseR(2),'b');
-    set(hRobScreenArea,'facealpha',0.5)
-    hRobPath = plot(PoseR(1),PoseR(2),'-b');
+    %hRobScreenArea = patch(PoseR(2),PoseR(1),'b');
+    %set(hRobScreenArea,'facealpha',0.5)
+    hRobPath = plot(PoseR(2),PoseR(1),'-b');
     axis equal  %make axis lengths equal
     axis(L*[0,1,0,1])
     ax1 = gca;
@@ -204,8 +204,8 @@ for i = 1:nIters
     if SHOW_PLOTS
         %add current region coordinates to the robot path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
-        set(hRobPath,'Xdata', [xd,PoseR(1)],'Ydata', [yd,PoseR(2)]);
-        set(hRob,'Xdata',PoseR(1),'Ydata',PoseR(2));
+        set(hRobPath,'Xdata', [xd,PoseR(2)],'Ydata', [yd,PoseR(1)]);
+        set(hRob,'Xdata',PoseR(2),'Ydata',PoseR(1));
         ax1.Title.String = {['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']};
         
         %update the distribution map

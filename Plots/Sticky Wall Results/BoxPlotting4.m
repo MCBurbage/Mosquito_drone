@@ -9,27 +9,6 @@
 %8 - result
 
 %set up data by value
-%kill rate
-% filename = 'StickyKillRateResults.pdf';
-% vals = [0.5 0.7 0.9];
-% group1 = stickyTestResults(stickyTestResults(:,5)==vals(1),:);
-% group2 = stickyTestResults(stickyTestResults(:,5)==vals(2),:);
-% group3 = stickyTestResults(stickyTestResults(:,5)==vals(3),:);
-
-%sticking coefficient
-% filename = 'StickySResults.pdf';
-% vals = [0.25 0.5 0.75];
-% group1 = stickyTestResults(stickyTestResults(:,3)==vals(1),:);
-% group2 = stickyTestResults(stickyTestResults(:,3)==vals(2),:);
-% group3 = stickyTestResults(stickyTestResults(:,3)==vals(3),:);
-
-%k
-% filename = 'StickyKResults.pdf';
-% vals = [0.2 0.4 0.6];
-% group1 = stickyTestResults(stickyTestResults(:,4)==vals(1),:);
-% group2 = stickyTestResults(stickyTestResults(:,4)==vals(2),:);
-% group3 = stickyTestResults(stickyTestResults(:,4)==vals(3),:);
-
 %row spacing
 filename = 'StickyRowSpaceResults.pdf';
 vals = [2 5 10 20];
@@ -54,8 +33,7 @@ h4 = boxplot(group4(:,8)/10000,group4(:,6),'colors',[0 0.5 0],'positions',positi
 % plot third set of boxes in gold
 h3 = boxplot(group3(:,8)/10000,group3(:,6),'colors',[0.6 0.6 0],'positions',position_3,'width',0.15);
 %set axis labels
-set(gca,'XTickLabel',{'Lawn-Mowing','Hybrid','Spiral'}) %sticky walls
-%set(gca,'XTickLabel',{'Spiral Out','Spiral to 50%','Spiral to 80%'}) %normal
+set(gca,'XTickLabel',{'Boustrophedon','Hybrid','Spiral'}) %sticky walls
 
 %hide outliers
 set(h1(7,:),'Visible','off')
@@ -64,7 +42,8 @@ set(h3(7,:),'Visible','off')
 set(h4(7,:),'Visible','off')
 %build legend
 box_vars = findall(gca,'Tag','Box');
-hLegend = legend(box_vars([10,7,1,4]), {num2str(vals(1)),num2str(vals(2)),num2str(vals(3)),num2str(vals(4))},'Location','eastoutside');
+%hLegend = legend(box_vars([10,7,1,4]), {num2str(vals(1)),num2str(vals(2)),num2str(vals(3)),num2str(vals(4))},'Location','eastoutside');
+hLegend = legend(box_vars([10,7,1,4]), {'L/50 m','L/20 m','L/10 m','L/5 m'},'Location','eastoutside');
 
 hold off
 % Insert texts and labels

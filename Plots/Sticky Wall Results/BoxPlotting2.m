@@ -32,7 +32,7 @@ position_2 = 1.3:1:6.3;
 h1 = boxplot(group1(:,8)/10000,group1(:,6),'colors','b','positions',position_1,'width',0.18);
 hold on  % Keep the first box plot on figure
 % plot second set of boxes in red
-h2 = boxplot(group2(:,8)/10000,group2(:,6),'colors',[0.8 0 0],'positions',position_2,'width',0.18,'Labels',{'Wall-Follow','Lawn-Mowing','Hybrid','Spiral','Greedy (1)','Greedy (2)'});
+h2 = boxplot(group2(:,8)/10000,group2(:,6),'colors',[0.8 0 0],'positions',position_2,'width',0.18);
 
 %set axis labels
 set(gca,'XTickLabel',{'WallFollow','Lawn-Mow','Hybrid','Spiral','Greedy(1)','Greedy(2)'}) %sticky walls

@@ -8,6 +8,7 @@ function plotMosquitoDensityKMeans(filename)
 %%% parameters
 %return if insufficient arguments passed
 if nargin<1
+    disp('File name required')
     return;
 end
 %set a number of means

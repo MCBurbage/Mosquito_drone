@@ -48,12 +48,12 @@ else
 end
 
 %set whether to display progress plots
-showPlots = true;
+SHOW_PLOTS = true;
 
 %set initial mosquito distribution
 distrib = nM * w;
 
-if showPlots
+if SHOW_PLOTS
     %create robot path figure
     figure(1); clf; set(gcf,'color','w');
     %draw robot
@@ -124,7 +124,7 @@ for i = 1:nIters
     killTotal = nM - sum(sum(distrib));
     
     %update figures
-    if showPlots
+    if SHOW_PLOTS
         %add current region coordinates to the robot path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(2)],'Ydata', [yd,PoseR(1)]);
@@ -138,6 +138,27 @@ for i = 1:nIters
             
         pause(0.02)
     end
+end
+%display final path with color gradient
+if SHOW_PLOTS
+    xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
+    col = 0:nIters;
+    col = col/velocityR;
+    %create robot color path figure
+    figure(3); clf; set(gcf,'color','w');
+    %draw robot
+    h1 = scatter(PoseR(2),PoseR(1),100,'b','filled');
+    hold on
+    %draw path
+    h2 = cline(xd,yd,col);
+    axis equal  %make axis lengths equal
+    axis(L*[0,1,0,1])
+    title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' particles collected']});
+    xlabel('x (m)')
+    ylabel('y (m)')
+    uistack(h1, 'top')
+    hColor = colorbar;
+    xlabel(hColor,'time (s)')
 end
 end
 

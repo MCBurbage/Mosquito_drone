@@ -19,13 +19,13 @@ function killTotal = Greedy2Sim(distType,L,runTime,velocityR,k,prm1,killRate)
 
 %set default parameters
 if nargin<1
-    distType = 'StickyWalls';
-    L = 100; %size of workspace (m)
+    distType = 'Normal';
+    L = 99; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
-    velocityR = 6; %robot velocity (m/s)
+    velocityR = 12; %robot velocity (m/s)
     killRate = 0.9; %percentage of population killed when robot visits cell
     k = 0.25; %mosquito probability of changing cells
-    prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    prm1 = L/10; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
 
 kstep = k/velocityR;
@@ -60,8 +60,6 @@ if SHOW_PLOTS
     %draw robot
     hRob = scatter(PoseR(2),PoseR(1),100,'b','filled');
     hold on
-    %hRobScreenArea = patch(PoseR(2),PoseR(1),'b');
-    %set(hRobScreenArea,'facealpha',0.5)
     hRobPath = plot(PoseR(2),PoseR(1),'-b');
     axis equal  %make axis lengths equal
     axis(L*[0,1,0,1])
@@ -203,7 +201,7 @@ for i = 1:nIters
     %update figures
     if SHOW_PLOTS
         %add current region coordinates to the robot path trace
-        xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
+        xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata'); 
         set(hRobPath,'Xdata', [xd,PoseR(2)],'Ydata', [yd,PoseR(1)]);
         set(hRob,'Xdata',PoseR(2),'Ydata',PoseR(1));
         ax1.Title.String = {['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' mosquitoes killed']};
@@ -215,6 +213,28 @@ for i = 1:nIters
         
         pause(0.02)
     end
+end
+
+%display final path with color gradient
+if SHOW_PLOTS
+    xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
+    col = 0:nIters;
+    col = col/velocityR;
+    %create robot color path figure
+    figure(3); clf; set(gcf,'color','w');
+    %draw robot
+    h1 = scatter(PoseR(2),PoseR(1),100,'b','filled');
+    hold on
+    %draw path
+    h2 = cline(xd,yd,col);
+    axis equal  %make axis lengths equal
+    axis(L*[0,1,0,1])
+    title({['Iteration ', num2str(i), ' of ', num2str(nIters)];[num2str(round(killTotal)), ' particles collected']});
+    xlabel('x (m)')
+    ylabel('y (m)')
+    uistack(h1, 'top')
+    hColor = colorbar;
+    xlabel(hColor,'time (s)')
 end
 end
 
@@ -244,7 +264,7 @@ end
 
 function distrib = ApplyTransition(distrib, P, L, w)
 %motionless distribution
-%return;
+return;
 
     %shape distribution as a vector
     distrib = reshape(distrib, 1, numel(distrib));

@@ -55,3 +55,17 @@ ylabel('Y Position (m)')
 zlabel('Mosquito Count in 1m x 1m Squares')
 set(gcf,'color','w');
 colorbar
+
+figure;
+image(permute(displayimage,[2 1 3]))
+hold on
+scatter(PoseM(:,1),PoseM(:,2),'.','r')
+contour(density')
+axis equal
+axis(L*[0,1,0,1])
+hcolor = colorbar;
+xlabel('x (m)')
+ylabel('y (m)')
+xlabel(hcolor,'Number of Mosquitoes (of 10,000)')
+set(gcf,'PaperPositionMode','auto','PaperSize',[5,4],'PaperPosition',[0,0,5,4] );
+%print(gcf, '-dpdf', '10kDensitySigma5Contour.pdf');

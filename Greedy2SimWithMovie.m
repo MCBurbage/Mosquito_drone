@@ -19,14 +19,16 @@ function killTotal = Greedy2Sim(distType,L,runTime,velocityR,k,prm1,killRate)
 
 %set default parameters
 if nargin<1
-    distType = 'Normal';
-    L = 99; %size of workspace (m)
+    distType = 'StickyWalls';
+    L = 100; %size of workspace (m)
     runTime = 100; %time to run simulation (s)
     velocityR = 12; %robot velocity (m/s)
     killRate = 0.9; %percentage of population killed when robot visits cell
     k = 0.25; %mosquito probability of changing cells
-    prm1 = L/10; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
+    prm1 = 0.5; %wall sticking factor (0=uniform distribution, 1=no movement away from walls)
 end
+global G
+ MOVIE_NAME = 'Greedy2Sticky';
 
 kstep = k/velocityR;
 if strcmp(distType,'StickyWalls')
@@ -69,13 +71,16 @@ if SHOW_PLOTS
     ax1.Title.String = {['Iteration 0 of ', num2str(nIters)];'0 mosquitoes killed'};
     
     %display distribution map
-    figure(2); clf; set(gcf,'color','w');
+G.fig = figure(2); clf; set(gcf,'color','w','MenuBar','none','NumberTitle','off');
+writerObj = VideoWriter(MOVIE_NAME,'MPEG-4');%http://www.mathworks.com/help/matlab/ref/videowriterclass.html
+set(writerObj,'Quality',100);
+open(writerObj);
     hDist = surf(distrib);
     ax2 = gca;
     ax2.XLabel.String = 'x (m)';
     ax2.YLabel.String = 'y (m)';
-    ax2.ZLabel.String = 'Number of Mosquitoes';
-    ax2.Title.String = {'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]};
+    ax2.ZLabel.String = 'Number of Particles';
+    ax2.Title.String = {'Current Population Distribution';['Step 0 of ', num2str(nIters)]};
     zl = zlim; zl(1) = 0;
 end
 %initialize iteration counter for mosquito movement
@@ -209,9 +214,15 @@ for i = 1:nIters
         %update the distribution map
         set(hDist,'Zdata',distrib)
         ax2.ZLim = zl;
-        ax2.Title.String = {'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
+        ax2.Title.String = {'Current Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
         
         pause(0.02)
+        figure(G.fig)
+            set(gcf,'renderer','painters')   %optional line to remove antialiasing 
+            tfig = myaa(3);   %optional line 2
+            F = getframe;
+            writeVideo(writerObj,F.cdata);
+            close(tfig)
     end
 end
 
@@ -264,7 +275,7 @@ end
 
 function distrib = ApplyTransition(distrib, P, L, w)
 %motionless distribution
-return;
+%return;
 
     %shape distribution as a vector
     distrib = reshape(distrib, 1, numel(distrib));

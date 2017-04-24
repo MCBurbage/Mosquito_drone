@@ -12,18 +12,18 @@ normalTestResults = csvread('NormalPrmResults.csv');
 
 %set up data by value
 %time
-% filename = 'NormalTimeResults.pdf';
-% vals = [300 600];
-% group1 = normalTestResults(normalTestResults(:,1)==vals(1),:);
-% group2 = normalTestResults(normalTestResults(:,1)==vals(2),:);
+filename = 'NormalTimeResults.pdf';
+vals = [300 600];
+group1 = normalTestResults(normalTestResults(:,1)==vals(1),:);
+group2 = normalTestResults(normalTestResults(:,1)==vals(2),:);
 
 %time/speed
-filename = 'NormalSpeedTimeResultswLgFont.pdf';
-vals = ['Low Speed/Time' 'High Speed/Time'];
-group1 = normalTestResults(normalTestResults(:,1)==300,:);
-group1 = group1(group1(:,2)==6,:);
-group2 = normalTestResults(normalTestResults(:,1)==600,:);
-group2 = group2(group2(:,2)==12,:);
+% filename = 'NormalSpeedTimeResults.pdf';
+% vals = ['Low Speed/Time' 'High Speed/Time'];
+% group1 = normalTestResults(normalTestResults(:,1)==300,:);
+% group1 = group1(group1(:,2)==6,:);
+% group2 = normalTestResults(normalTestResults(:,1)==600,:);
+% group2 = group2(group2(:,2)==12,:);
 
 f=figure;
 % set positions for boxes
@@ -43,8 +43,8 @@ set(h1(7,:),'Visible','off')
 set(h2(7,:),'Visible','off')
 %build legend
 box_vars = findall(gca,'Tag','Box');
-%hLegend = legend(box_vars([7,1]), {[num2str(vals(1)) ' s'],[num2str(vals(2)) ' s']},'Location','northwest');
-hLegend = legend(box_vars([7,1]), {'Low Speed/Time','High Speed/Time'},'Location','northoutside');
+hLegend = legend(box_vars([7,1]), {[num2str(vals(1)) ' s'],[num2str(vals(2)) ' s']},'Location','northwest');
+%hLegend = legend(box_vars([7,1]), {'Low Speed/Time','High Speed/Time'},'Location','eastoutside');
 
 hold off
 % Insert texts and labels

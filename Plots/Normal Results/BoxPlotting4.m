@@ -12,30 +12,30 @@ normalTestResults = csvread('NormalPrmResults.csv');
 
 %set up data by value
 %kill rate
-% filename = 'NormalSigmaResults.pdf';
-% vals = [99/20 99/10 99/5 99/2];
-% group1 = normalTestResults(normalTestResults(:,3)==vals(1),:);
-% group2 = normalTestResults(normalTestResults(:,3)==vals(2),:);
-% group3 = normalTestResults(normalTestResults(:,3)==vals(3),:);
-% group4 = normalTestResults(normalTestResults(:,3)==vals(4),:);
-% set positions for boxes
-% position_1 = 1:1:5;
-% position_2 = 1.2:1:5.2;
-% position_3 = 1.4:1:5.4;
-% position_4 = 1.6:1:5.6;
+filename = 'NormalSigmaResults.pdf';
+vals = [99/20 99/10 99/5 99/2];
+group1 = normalTestResults(normalTestResults(:,3)==vals(1),:);
+group2 = normalTestResults(normalTestResults(:,3)==vals(2),:);
+group3 = normalTestResults(normalTestResults(:,3)==vals(3),:);
+group4 = normalTestResults(normalTestResults(:,3)==vals(4),:);
+%set positions for boxes
+position_1 = 1:1:5;
+position_2 = 1.2:1:5.2;
+position_3 = 1.4:1:5.4;
+position_4 = 1.6:1:5.6;
 
 %row spacing
-filename = 'NormalRowSpaceResults.pdf';
-vals = [99/50 99/20 99/10 99/5];
-group1 = normalTestResults(normalTestResults(:,6)==vals(1),:);
-group2 = normalTestResults(normalTestResults(:,6)==vals(2),:);
-group3 = normalTestResults(normalTestResults(:,6)==vals(3),:);
-group4 = normalTestResults(normalTestResults(:,6)==vals(4),:);
+% filename = 'NormalRowSpaceResults.pdf';
+% vals = [99/50 99/20 99/10 99/5];
+% group1 = normalTestResults(normalTestResults(:,6)==vals(1),:);
+% group2 = normalTestResults(normalTestResults(:,6)==vals(2),:);
+% group3 = normalTestResults(normalTestResults(:,6)==vals(3),:);
+% group4 = normalTestResults(normalTestResults(:,6)==vals(4),:);
 % set positions for boxes
-position_1 = 1:1:3;
-position_2 = 1.2:1:3.2;
-position_3 = 1.4:1:3.4;
-position_4 = 1.6:1:3.6;
+% position_1 = 1:1:3;
+% position_2 = 1.2:1:3.2;
+% position_3 = 1.4:1:3.4;
+% position_4 = 1.6:1:3.6;
 
 f=figure;
 % plot first set of boxes in blue
@@ -58,8 +58,8 @@ set(h4(7,:),'Visible','off')
 %build legend
 box_vars = findall(gca,'Tag','Box');
 %hLegend = legend(box_vars([16,11,1,6]), {num2str(vals(1)),num2str(vals(2)),num2str(vals(3)),num2str(vals(4))},'Location','eastoutside');
-%hLegend = legend(box_vars([16,11,1,6]), {'\sigma/20','\sigma/10','\sigma/5','\sigma/2'},'Location','eastoutside');
-hLegend = legend(box_vars([10,7,1,4]), {'L/50 m','L/20 m','L/10 m','L/5 m'},'Location','eastoutside');
+hLegend = legend(box_vars([16,11,1,6]), {'\sigma/20','\sigma/10','\sigma/5','\sigma/2'},'Location','eastoutside');
+%hLegend = legend(box_vars([10,7,1,4]), {'L/50 m','L/20 m','L/10 m','L/5 m'},'Location','eastoutside');
 
 hold off
 % Insert texts and labels

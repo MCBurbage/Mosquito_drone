@@ -58,16 +58,18 @@ if showPlots
     figure(1); clf; set(gcf,'color','w');
     set(gcf,'Position',[-23    21   587   684]);
     hDist1 = surf(distrib-20,'EdgeColor','none');
+    caxis([0,4.0]-20)
     hold on
     view(0,90)
+    
     
     
     %draw robot
     hRob = scatter(PoseR(2),PoseR(1),100,'b','filled');
     hold on
-    hRobScreenArea = patch(PoseR(2),PoseR(1),'b');
+    hRobScreenArea = patch(PoseR(2),PoseR(1),'r');
     set(hRobScreenArea,'facealpha',0.5)
-    hRobPath = plot(PoseR(2),PoseR(1),'-b');
+    hRobPath = plot(PoseR(2),PoseR(1),'-r');
     axis equal  %make axis lengths equal
     axis(L*[0,1,0,1])
     ax1 = gca;
@@ -94,7 +96,7 @@ set(get(ax2, 'XLabel'),'string','x (m)');
 set(get(ax2, 'YLabel'),'string','y (m)');
 set(get(ax2, 'ZLabel'),'string','Number of Mosquitoes');
 set(get(ax2, 'Title'),'string', {'Current Mosquito Population Distribution';['Step 0 of ', num2str(nIters)]});
-
+caxis([0,4.0])
    zl = zlim; zl(1) = 0;
 end
 
@@ -221,6 +223,7 @@ for i = 1:nIters
     
     %update figures
     if showPlots
+        display(['step ',num2str(num2str(i)),' pose ', num2str(PoseR)])
         %add current region coordinates to the robot path trace
         xd = get(hRobPath,'Xdata'); yd = get(hRobPath,'Ydata');
         set(hRobPath,'Xdata', [xd,PoseR(2)],'Ydata', [yd,PoseR(1)]);
@@ -233,6 +236,7 @@ for i = 1:nIters
         %update the distribution map
         set(hDist,'Zdata',distrib)
         set(hDist1,'Zdata',distrib-20)
+        
       %  ax2.ZLim = zl;
       %  ax2.Title.String = {'Current Mosquito Population Distribution';['Step ', num2str(i), ' of ', num2str(nIters)]};
         
